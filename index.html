@@ -11,7 +11,7 @@
 <meta name="author" content="Echo Softworks">
 <meta name="robots" content="index, follow, max-image-preview:large">
 <link rel="canonical" href="https://www.echosoftworks.dev/">
-<meta name="theme-color" content="#000000">
+<meta name="theme-color" content="#0B0F0E">
 
 <!-- Open Graph / Facebook -->
 <meta property="og:type" content="website">
@@ -62,22 +62,21 @@
 </script>
 <style>
   :root{
-    --bg: #000000;
-    --panel: #030403;
-    --panel-2: #050805;
-    --line: rgba(111,204,62,0.2);
-    --line-dim: rgba(220,230,222,0.06);
-    --fg: #E2E8E2;
-    --fg-dim: #66796E;
-    --green: #6FCC3E;
-    --green-bright: #93E869;
-    --green-dim: rgba(111,204,62,0.14);
+    --bg: #0B0F0E;
+    --panel: #101715;
+    --panel-2: #141d1a;
+    --line: rgba(124,255,178,0.14);
+    --line-dim: rgba(233,239,234,0.08);
+    --fg: #E9EFEA;
+    --fg-dim: #8CA39A;
+    --green: #7CFFB2;
+    --green-dim: rgba(124,255,178,0.12);
     --amber: #FFB454;
     --amber-dim: rgba(255,180,84,0.14);
     --radius: 10px;
   }
   *{box-sizing:border-box;}
-  html{scroll-behavior:smooth; background:var(--bg);}
+  html{scroll-behavior:smooth;}
   body{
     margin:0;
     background:var(--bg);
@@ -92,7 +91,7 @@
   :focus-visible{ outline:2px solid var(--green); outline-offset:3px; }
   .skip-link{
     position:absolute; left:12px; top:-48px; z-index:100;
-    background:var(--green); color:#040A03; padding:10px 16px;
+    background:var(--green); color:#06110A; padding:10px 16px;
     border-radius:6px; font-family:'JetBrains Mono', monospace; font-size:0.85rem;
     text-decoration:none; transition:top 0.15s ease;
   }
@@ -100,8 +99,8 @@
 
   header.site{
     position:sticky; top:0; z-index:50;
-    background:rgba(0,0,0,0.97);
-    backdrop-filter:blur(6px);
+    background:rgba(11,15,14,0.86);
+    backdrop-filter:blur(10px);
     border-bottom:1px solid var(--line-dim);
   }
   nav{ display:flex; align-items:center; justify-content:space-between; padding:16px 28px; max-width:1120px; margin:0 auto; }
@@ -132,7 +131,7 @@
   .btn{ display:inline-flex; align-items:center; gap:8px; padding:13px 22px; border-radius:8px; font-family:'JetBrains Mono', monospace; font-size:0.92rem; font-weight:500; text-decoration:none; border:1px solid transparent; cursor:pointer; transition:transform 0.12s ease, border-color 0.12s ease, background 0.12s ease; }
   .btn:hover{transform:translateY(-1px);}
   .btn-primary{background:var(--green); color:#06110A;}
-  .btn-primary:hover{background:var(--green-bright);}
+  .btn-primary:hover{background:#93ffc0;}
   .btn-ghost{border-color:var(--line); color:var(--fg);}
   .btn-ghost:hover{border-color:var(--green); color:var(--green);}
 
@@ -175,13 +174,13 @@
     background:transparent; border:1px solid var(--line-dim); border-bottom:none;
     color:var(--fg-dim); cursor:pointer;
   }
-  .lang-tab.active{ color:var(--green); border-color:var(--line); background:#000000; }
+  .lang-tab.active{ color:var(--green); border-color:var(--line); background:#0B100E; }
 
   pre{ margin:0; padding:0 24px 22px; overflow-x:auto; }
-  code{ font-family:'JetBrains Mono', monospace; font-size:0.8rem; color:#A9CB93; white-space:pre; }
+  code{ font-family:'JetBrains Mono', monospace; font-size:0.8rem; color:#c9e8d6; white-space:pre; }
   .code-panel{ display:none; }
   .code-panel.active{ display:block; }
-  .code-inner{ background:#000000; border-top:1px solid var(--line-dim); padding-top:18px; }
+  .code-inner{ background:#0B100E; border-top:1px solid var(--line-dim); padding-top:18px; }
   .script-footer{ display:flex; align-items:center; justify-content:space-between; padding:14px 24px; border-top:1px solid var(--line-dim); flex-wrap:wrap; gap:10px; }
   .btn-small-coffee{ font-family:'JetBrains Mono', monospace; font-size:0.8rem; color:var(--amber); text-decoration:none; padding:7px 14px; border-radius:999px; background:var(--amber-dim); border:1px solid rgba(255,180,84,0.3); }
 
@@ -1019,7 +1018,7 @@ function transform(value) {
   function frame(t){
     ctx.clearRect(0,0,w,h);
     const phase = t * 0.0009;
-    drawWave(phase, 46, 'rgba(111,204,62,0.65)', 2);
+    drawWave(phase, 46, 'rgba(124,255,178,0.55)', 2);
     drawWave(phase + 0.6, 46, 'rgba(255,180,84,0.4)', 2);
     if(!reduceMotion){
       requestAnimationFrame(frame);

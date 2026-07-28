@@ -6,20 +6,20 @@
 
 <!-- Primary SEO -->
 <title>Skeleton Scripts | Free Starter Code — Echo Softworks</title>
-<meta name="description" content="Free, open skeleton scripts for servos, motors, LEDs, REST APIs, WebSockets, web apps, and CLI tools. Copy-paste starting points across Arduino, CircuitPython, Python, and Node — no sign-up required.">
+<meta name="description" content="Free, open skeleton scripts for servos, motors, LEDs, sensors, REST APIs, WebSockets, web apps, and CLI tools. Copy-paste starting points across Arduino, CircuitPython, Python, and Node — no sign-up required.">
 <meta name="keywords" content="skeleton scripts, boilerplate code, Arduino starter code, Raspberry Pi Python, FastAPI starter, CircuitPython, embedded systems, hobbyist code templates, websocket starter, CLI starter">
 <meta name="author" content="Echo Softworks">
 <meta name="robots" content="index, follow, max-image-preview:large">
-<link rel="canonical" href="https://braemonk.github.io/echo_softworks/scripts.html">
+<link rel="canonical" href="https://echosoftwork.com/scripts.html">
 <meta name="theme-color" content="#0B0F0E">
 
 <!-- Open Graph / Facebook -->
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Echo Softworks">
-<meta property="og:url" content="https://braemonk.github.io/echo_softworks/scripts.html">
+<meta property="og:url" content="https://echosoftwork.com/scripts.html">
 <meta property="og:title" content="Skeleton Scripts | Free Starter Code — Echo Softworks">
-<meta property="og:description" content="A free, open library of skeleton scripts so hobbyists never face a blank page — servos, motors, LEDs, APIs, WebSockets, and CLI tools.">
-<meta property="og:image" content="https://braemonk.github.io/echo_softworks/og-cover.png">
+<meta property="og:description" content="A free, open library of skeleton scripts so hobbyists never face a blank page — servos, motors, LEDs, sensors, APIs, WebSockets, and CLI tools.">
+<meta property="og:image" content="https://echosoftwork.com/og-cover.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta property="og:locale" content="en_US">
@@ -28,7 +28,7 @@
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="Skeleton Scripts | Free Starter Code — Echo Softworks">
 <meta name="twitter:description" content="Free, open skeleton scripts for servos, motors, LEDs, APIs, WebSockets &amp; CLI tools — plus the paid work that funds them.">
-<meta name="twitter:image" content="https://braemonk.github.io/echo_softworks/og-cover.png">
+<meta name="twitter:image" content="https://echosoftwork.com/og-cover.png">
 
 <!-- Icons -->
 <link rel="icon" href="favicon.ico" sizes="any">
@@ -45,12 +45,12 @@
   "@context": "https://schema.org",
   "@type": "CollectionPage",
   "name": "Skeleton Scripts",
-  "url": "https://braemonk.github.io/echo_softworks/scripts.html",
-  "description": "Free, open library of skeleton scripts for servos, motors, LEDs, APIs, WebSockets, and CLI tools.",
+  "url": "https://echosoftwork.com/scripts.html",
+  "description": "Free, open library of skeleton scripts for servos, motors, LEDs, sensors, APIs, WebSockets, and CLI tools.",
   "isPartOf": {
     "@type": "WebSite",
     "name": "Echo Softworks",
-    "url": "https://braemonk.github.io/echo_softworks/"
+    "url": "https://echosoftwork.com/"
   }
 }
 </script>
@@ -92,1177 +92,11 @@
         <button class="filter-btn" data-filter="tooling">Tooling</button>
       </div>
 
-      <!-- SERVO -->
-      <div class="script-card" data-category="hardware">
-        <div class="script-head">
-          <div>
-            <h3>Servo Sweep &amp; Position Control</h3>
-            <p>Get a servo moving predictably before you touch your real project.</p>
-            <div class="script-meta"><span class="pill">motor &amp; servo</span><span class="pill">embedded</span></div>
-          </div>
-        </div>
-        <details>
-          <summary>View skeleton script</summary>
-          <div class="lang-tabs">
-            <button class="lang-tab active" data-lang="cpp">Arduino C++</button>
-            <button class="lang-tab" data-lang="python">CircuitPython</button>
-          </div>
-          <div class="code-inner">
-            <pre class="code-panel active" data-lang="cpp"><code>#include &lt;Servo.h&gt;
-
-// ── CONFIG ────────────────────────────────
-const int SERVO_PIN   = 9;     // TODO: your PWM-capable pin
-const int MIN_ANGLE   = 0;
-const int MAX_ANGLE   = 180;
-const int STEP_DELAY  = 15;    // ms between steps
-
-Servo myServo;
-int angle = MIN_ANGLE;
-int direction = 1;
-
-void setup() {
-  myServo.attach(SERVO_PIN);
-  myServo.write(angle);
-}
-
-void loop() {
-  myServo.write(angle);
-  angle += direction;
-
-  if (angle >= MAX_ANGLE || angle <= MIN_ANGLE) {
-    direction *= -1;
-  }
-  delay(STEP_DELAY);
-
-  // TODO: replace the sweep with your real logic
-}
-
-void moveTo(int targetAngle) {
-  targetAngle = constrain(targetAngle, MIN_ANGLE, MAX_ANGLE);
-  myServo.write(targetAngle);
-}</code></pre>
-            <pre class="code-panel" data-lang="python"><code>import time
-import board
-import pwmio
-from adafruit_motor import servo
-
-# ── CONFIG ────────────────────────────────
-SERVO_PIN = board.D9      # TODO: your PWM-capable pin
-MIN_ANGLE = 0
-MAX_ANGLE = 180
-STEP_DELAY = 0.015
-
-pwm = pwmio.PWMOut(SERVO_PIN, duty_cycle=2 ** 15, frequency=50)
-my_servo = servo.Servo(pwm)
-
-angle = MIN_ANGLE
-direction = 1
-
-def move_to(target_angle):
-    target_angle = max(MIN_ANGLE, min(MAX_ANGLE, target_angle))
-    my_servo.angle = target_angle
-
-while True:
-    my_servo.angle = angle
-    angle += direction
-
-    if angle >= MAX_ANGLE or angle <= MIN_ANGLE:
-        direction *= -1
-
-    time.sleep(STEP_DELAY)
-
-    # TODO: replace the sweep with your real logic</code></pre>
-          </div>
-        </details>
-        <div class="script-footer">
-          <span class="pill">Starting point, not a final answer</span>
-          <a class="btn-small-coffee" href="https://www.buymeacoffee.com/echosw" target="_blank" rel="noopener">☕ This one helped</a>
-        </div>
-      </div>
-
-      <!-- DC MOTOR -->
-      <div class="script-card" data-category="hardware">
-        <div class="script-head">
-          <div>
-            <h3>DC Motor — PWM Driver</h3>
-            <p>Direction and speed control through a standard H-bridge (L298N / TB6612-style).</p>
-            <div class="script-meta"><span class="pill">motor &amp; servo</span><span class="pill">embedded</span></div>
-          </div>
-        </div>
-        <details>
-          <summary>View skeleton script</summary>
-          <div class="lang-tabs">
-            <button class="lang-tab active" data-lang="cpp">Arduino C++</button>
-            <button class="lang-tab" data-lang="python">Raspberry Pi (Python)</button>
-          </div>
-          <div class="code-inner">
-            <pre class="code-panel active" data-lang="cpp"><code>// ── CONFIG ────────────────────────────────
-const int PIN_IN1 = 5;   // TODO: H-bridge input 1
-const int PIN_IN2 = 6;   // TODO: H-bridge input 2
-const int PIN_PWM = 9;   // TODO: enable / speed pin
-
-void setup() {
-  pinMode(PIN_IN1, OUTPUT);
-  pinMode(PIN_IN2, OUTPUT);
-  pinMode(PIN_PWM, OUTPUT);
-  stopMotor();
-}
-
-void loop() {
-  // TODO: replace this demo pattern with real control logic
-  forward(180);   delay(1500);
-  stopMotor();    delay(400);
-  backward(180);  delay(1500);
-  stopMotor();    delay(400);
-}
-
-void forward(int speed) {
-  digitalWrite(PIN_IN1, HIGH);
-  digitalWrite(PIN_IN2, LOW);
-  analogWrite(PIN_PWM, constrain(speed, 0, 255));
-}
-
-void backward(int speed) {
-  digitalWrite(PIN_IN1, LOW);
-  digitalWrite(PIN_IN2, HIGH);
-  analogWrite(PIN_PWM, constrain(speed, 0, 255));
-}
-
-void stopMotor() {
-  digitalWrite(PIN_IN1, LOW);
-  digitalWrite(PIN_IN2, LOW);
-  analogWrite(PIN_PWM, 0);
-}</code></pre>
-            <pre class="code-panel" data-lang="python"><code>import RPi.GPIO as GPIO
-import time
-
-# ── CONFIG ────────────────────────────────
-PIN_IN1 = 17
-PIN_IN2 = 27
-PIN_PWM = 18
-
-GPIO.setmode(GPIO.BCM)
-GPIO.setup(PIN_IN1, GPIO.OUT)
-GPIO.setup(PIN_IN2, GPIO.OUT)
-GPIO.setup(PIN_PWM, GPIO.OUT)
-pwm = GPIO.PWM(PIN_PWM, 1000)
-pwm.start(0)
-
-def forward(speed):
-    GPIO.output(PIN_IN1, GPIO.HIGH)
-    GPIO.output(PIN_IN2, GPIO.LOW)
-    pwm.ChangeDutyCycle(max(0, min(100, speed)))
-
-def backward(speed):
-    GPIO.output(PIN_IN1, GPIO.LOW)
-    GPIO.output(PIN_IN2, GPIO.HIGH)
-    pwm.ChangeDutyCycle(max(0, min(100, speed)))
-
-def stop_motor():
-    GPIO.output(PIN_IN1, GPIO.LOW)
-    GPIO.output(PIN_IN2, GPIO.LOW)
-    pwm.ChangeDutyCycle(0)
-
-try:
-    # TODO: replace this demo pattern with real control logic
-    while True:
-        forward(70);  time.sleep(1.5)
-        stop_motor(); time.sleep(0.4)
-        backward(70); time.sleep(1.5)
-        stop_motor(); time.sleep(0.4)
-except KeyboardInterrupt:
-    pwm.stop()
-    GPIO.cleanup()</code></pre>
-          </div>
-        </details>
-        <div class="script-footer">
-          <span class="pill">Starting point, not a final answer</span>
-          <a class="btn-small-coffee" href="https://www.buymeacoffee.com/echosw" target="_blank" rel="noopener">☕ This one helped</a>
-        </div>
-      </div>
-
-      <!-- LED -->
-      <div class="script-card" data-category="hardware">
-        <div class="script-head">
-          <div>
-            <h3>Addressable LED Pattern</h3>
-            <p>A rotating rainbow across a NeoPixel/WS2812 strip — swap the pattern math for your own.</p>
-            <div class="script-meta"><span class="pill">lighting</span><span class="pill">embedded</span></div>
-          </div>
-        </div>
-        <details>
-          <summary>View skeleton script</summary>
-          <div class="lang-tabs">
-            <button class="lang-tab active" data-lang="cpp">Arduino C++ (FastLED)</button>
-            <button class="lang-tab" data-lang="python">CircuitPython</button>
-          </div>
-          <div class="code-inner">
-            <pre class="code-panel active" data-lang="cpp"><code>#include &lt;FastLED.h&gt;
-
-// ── CONFIG ────────────────────────────────
-#define LED_PIN     6      // TODO: your data pin
-#define NUM_LEDS    30
-#define BRIGHTNESS  80
-
-CRGB leds[NUM_LEDS];
-
-void setup() {
-  FastLED.addLeds&lt;WS2812B, LED_PIN, GRB&gt;(leds, NUM_LEDS);
-  FastLED.setBrightness(BRIGHTNESS);
-}
-
-void loop() {
-  // TODO: replace with your real pattern
-  static uint8_t hue = 0;
-  for (int i = 0; i < NUM_LEDS; i++) {
-    leds[i] = CHSV(hue + (i * 256 / NUM_LEDS), 255, 255);
-  }
-  FastLED.show();
-  hue++;
-  delay(20);
-}</code></pre>
-            <pre class="code-panel" data-lang="python"><code>import board
-import neopixel
-import time
-
-# ── CONFIG ────────────────────────────────
-LED_PIN = board.D6
-NUM_LEDS = 30
-BRIGHTNESS = 0.3
-
-pixels = neopixel.NeoPixel(LED_PIN, NUM_LEDS, brightness=BRIGHTNESS, auto_write=False)
-
-def wheel(pos):
-    if pos < 85:
-        return (255 - pos * 3, pos * 3, 0)
-    elif pos < 170:
-        pos -= 85
-        return (0, 255 - pos * 3, pos * 3)
-    else:
-        pos -= 170
-        return (pos * 3, 0, 255 - pos * 3)
-
-hue = 0
-while True:
-    # TODO: replace with your real pattern
-    for i in range(NUM_LEDS):
-        pixel_index = (i * 256 // NUM_LEDS) + hue
-        pixels[i] = wheel(pixel_index & 255)
-    pixels.show()
-    hue = (hue + 1) % 256
-    time.sleep(0.02)</code></pre>
-          </div>
-        </details>
-        <div class="script-footer">
-          <span class="pill">Starting point, not a final answer</span>
-          <a class="btn-small-coffee" href="https://www.buymeacoffee.com/echosw" target="_blank" rel="noopener">☕ This one helped</a>
-        </div>
-      </div>
-
-      <!-- TEMP/HUMIDITY SENSOR -->
-      <div class="script-card" data-category="hardware">
-        <div class="script-head">
-          <div>
-            <h3>Temperature &amp; Humidity Sensor Reader</h3>
-            <p>Poll a DHT22 on an interval and hand off clean readings, with bad-read retries baked in.</p>
-            <div class="script-meta"><span class="pill">sensors</span><span class="pill">embedded</span></div>
-          </div>
-        </div>
-        <details>
-          <summary>View skeleton script</summary>
-          <div class="lang-tabs">
-            <button class="lang-tab active" data-lang="cpp">Arduino C++</button>
-            <button class="lang-tab" data-lang="python">CircuitPython</button>
-          </div>
-          <div class="code-inner">
-            <pre class="code-panel active" data-lang="cpp"><code>#include &lt;DHT.h&gt;
-
-// ── CONFIG ────────────────────────────────
-#define DHT_PIN     2        // TODO: your data pin
-#define DHT_TYPE    DHT22
-const unsigned long READ_INTERVAL = 2000;  // ms, DHT22 min ~2s
-
-DHT dht(DHT_PIN, DHT_TYPE);
-unsigned long lastRead = 0;
-
-void setup() {
-  Serial.begin(9600);
-  dht.begin();
-}
-
-void loop() {
-  if (millis() - lastRead >= READ_INTERVAL) {
-    lastRead = millis();
-    readSensor();
-  }
-  // TODO: replace the Serial print with your real logic
-}
-
-void readSensor() {
-  float humidity = dht.readHumidity();
-  float tempC = dht.readTemperature();
-
-  if (isnan(humidity) || isnan(tempC)) {
-    Serial.println("Read failed, will retry next interval");
-    return;
-  }
-
-  Serial.print("Temp: "); Serial.print(tempC);
-  Serial.print("C  Humidity: "); Serial.print(humidity); Serial.println("%");
-}</code></pre>
-            <pre class="code-panel" data-lang="python"><code>import time
-import board
-import adafruit_dht
-
-# ── CONFIG ────────────────────────────────
-DHT_PIN = board.D2       # TODO: your data pin
-READ_INTERVAL = 2.0      # seconds, DHT22 min ~2s
-
-dht = adafruit_dht.DHT22(DHT_PIN)
-
-def read_sensor():
-    try:
-        temp_c = dht.temperature
-        humidity = dht.humidity
-        print(f"Temp: {temp_c}C  Humidity: {humidity}%")
-        return temp_c, humidity
-    except RuntimeError as e:
-        # DHT sensors drop reads often — this is normal, just retry
-        print(f"Read failed ({e.args[0]}), will retry next interval")
-        return None, None
-
-while True:
-    read_sensor()   # TODO: replace with your real logic
-    time.sleep(READ_INTERVAL)</code></pre>
-          </div>
-        </details>
-        <div class="script-footer">
-          <span class="pill">Starting point, not a final answer</span>
-          <a class="btn-small-coffee" href="https://www.buymeacoffee.com/echosw" target="_blank" rel="noopener">☕ This one helped</a>
-        </div>
-      </div>
-
-      <!-- BUTTON DEBOUNCE -->
-      <div class="script-card" data-category="hardware">
-        <div class="script-head">
-          <div>
-            <h3>Button Input &amp; Debounce</h3>
-            <p>Clean single-press detection from a noisy mechanical switch — no phantom double-fires.</p>
-            <div class="script-meta"><span class="pill">input</span><span class="pill">embedded</span></div>
-          </div>
-        </div>
-        <details>
-          <summary>View skeleton script</summary>
-          <div class="lang-tabs">
-            <button class="lang-tab active" data-lang="cpp">Arduino C++</button>
-            <button class="lang-tab" data-lang="python">Raspberry Pi (Python)</button>
-          </div>
-          <div class="code-inner">
-            <pre class="code-panel active" data-lang="cpp"><code>// ── CONFIG ────────────────────────────────
-const int BUTTON_PIN = 2;         // TODO: your input pin
-const unsigned long DEBOUNCE_MS = 40;
-
-int lastReading = HIGH;
-int stableState = HIGH;
-unsigned long lastChangeTime = 0;
-
-void setup() {
-  Serial.begin(9600);
-  pinMode(BUTTON_PIN, INPUT_PULLUP);   // wired to GND when pressed
-}
-
-void loop() {
-  int reading = digitalRead(BUTTON_PIN);
-
-  if (reading != lastReading) {
-    lastChangeTime = millis();
-  }
-
-  if (millis() - lastChangeTime > DEBOUNCE_MS) {
-    if (reading != stableState) {
-      stableState = reading;
-      if (stableState == LOW) {
-        onPress();   // TODO: replace with your real logic
-      }
-    }
-  }
-
-  lastReading = reading;
-}
-
-void onPress() {
-  Serial.println("Button pressed");
-}</code></pre>
-            <pre class="code-panel" data-lang="python"><code>import RPi.GPIO as GPIO
-import time
-
-# ── CONFIG ────────────────────────────────
-BUTTON_PIN = 17     # TODO: your input pin
-DEBOUNCE_MS = 200
-
-def on_press(channel):
-    # TODO: replace with your real logic
-    print("Button pressed")
-
-GPIO.setmode(GPIO.BCM)
-GPIO.setup(BUTTON_PIN, GPIO.IN, pull_up_down=GPIO.PUD_UP)
-GPIO.add_event_detect(BUTTON_PIN, GPIO.FALLING,
-                       callback=on_press, bouncetime=DEBOUNCE_MS)
-
-try:
-    while True:
-        time.sleep(1)
-except KeyboardInterrupt:
-    GPIO.cleanup()</code></pre>
-          </div>
-        </details>
-        <div class="script-footer">
-          <span class="pill">Starting point, not a final answer</span>
-          <a class="btn-small-coffee" href="https://www.buymeacoffee.com/echosw" target="_blank" rel="noopener">☕ This one helped</a>
-        </div>
-      </div>
-
-      <!-- WEB APP -->
-      <div class="script-card" data-category="web">
-        <div class="script-head">
-          <div>
-            <h3>Web App Starter, No Build Step</h3>
-            <p>State, render, and event handling in one file — open it and go.</p>
-            <div class="script-meta"><span class="pill">web app</span><span class="pill">no build</span></div>
-          </div>
-        </div>
-        <details>
-          <summary>View skeleton script</summary>
-          <div class="lang-tabs">
-            <button class="lang-tab active" data-lang="js">Vanilla JS</button>
-            <button class="lang-tab" data-lang="python">Python (Flask)</button>
-          </div>
-          <div class="code-inner">
-            <pre class="code-panel active" data-lang="js"><code>&lt;!-- index.html — open directly in a browser, no server needed --&gt;
-&lt;div id="app"&gt;&lt;/div&gt;
-&lt;script&gt;
-// ── STATE ─────────────────────────────────
-const state = { items: [] };   // TODO: shape this to your data
-
-// ── RENDER ────────────────────────────────
-function render() {
-  const app = document.getElementById('app');
-  app.innerHTML = `
-    &lt;h1&gt;My App&lt;/h1&gt;
-    &lt;button data-action="add"&gt;Add item&lt;/button&gt;
-    &lt;ul&gt;
-      ${state.items.map((item, i) =&gt;
-        `&lt;li&gt;${item} &lt;button data-action="remove" data-index="${i}"&gt;x&lt;/button&gt;&lt;/li&gt;`
-      ).join('')}
-    &lt;/ul&gt;
-  `;
-}
-
-// ── EVENTS (delegated — survives re-renders) ─
-document.getElementById('app').addEventListener('click', (e) =&gt; {
-  const action = e.target.dataset.action;
-  if (action === 'add') {
-    state.items.push(`Item ${state.items.length + 1}`);
-    render();
-  }
-  if (action === 'remove') {
-    state.items.splice(Number(e.target.dataset.index), 1);
-    render();
-  }
-});
-
-render();
-&lt;/script&gt;</code></pre>
-            <pre class="code-panel" data-lang="python"><code>from flask import Flask, render_template_string, request, jsonify
-
-app = Flask(__name__)
-
-# ── STATE ─────────────────────────────────
-state = {"items": []}   # TODO: shape this to your data
-
-PAGE = """
-&lt;h1&gt;My App&lt;/h1&gt;
-&lt;button onclick="addItem()"&gt;Add item&lt;/button&gt;
-&lt;ul id="list"&gt;&lt;/ul&gt;
-&lt;script&gt;
-async function refresh() {
-  const res = await fetch('/items');
-  const data = await res.json();
-  document.getElementById('list').innerHTML =
-    data.items.map((item, i) =&gt; `&lt;li&gt;${item} &lt;button onclick="removeItem(${i})"&gt;x&lt;/button&gt;&lt;/li&gt;`).join('');
-}
-async function addItem() { await fetch('/items', { method: 'POST' }); refresh(); }
-async function removeItem(i) { await fetch(`/items/${i}`, { method: 'DELETE' }); refresh(); }
-refresh();
-&lt;/script&gt;
-"""
-
-@app.route("/")
-def index():
-    return render_template_string(PAGE)
-
-@app.route("/items", methods=["GET", "POST"])
-def items():
-    if request.method == "POST":
-        state["items"].append(f"Item {len(state['items']) + 1}")
-    return jsonify(state)
-
-@app.route("/items/&lt;int:i&gt;", methods=["DELETE"])
-def remove_item(i):
-    if 0 <= i < len(state["items"]):
-        state["items"].pop(i)
-    return jsonify(state)
-
-if __name__ == "__main__":
-    app.run(debug=True)</code></pre>
-          </div>
-        </details>
-        <div class="script-footer">
-          <span class="pill">Starting point, not a final answer</span>
-          <a class="btn-small-coffee" href="https://www.buymeacoffee.com/echosw" target="_blank" rel="noopener">☕ This one helped</a>
-        </div>
-      </div>
-
-      <!-- LIVE SEARCH -->
-      <div class="script-card" data-category="web">
-        <div class="script-head">
-          <div>
-            <h3>Debounced Live Search / Filter</h3>
-            <p>Filters a list as the user types without hammering re-renders on every keystroke.</p>
-            <div class="script-meta"><span class="pill">web app</span><span class="pill">no build</span></div>
-          </div>
-        </div>
-        <details>
-          <summary>View skeleton script</summary>
-          <div class="lang-tabs">
-            <button class="lang-tab active" data-lang="js">Vanilla JS</button>
-            <button class="lang-tab" data-lang="python">Python (Flask)</button>
-          </div>
-          <div class="code-inner">
-            <pre class="code-panel active" data-lang="js"><code>&lt;!-- index.html — open directly in a browser, no server needed --&gt;
-&lt;input id="search" placeholder="Search..." /&gt;
-&lt;ul id="results"&gt;&lt;/ul&gt;
-&lt;script&gt;
-// ── DATA ──────────────────────────────────
-const items = ["Apple", "Banana", "Cherry"];   // TODO: your real data
-
-// ── DEBOUNCE HELPER ───────────────────────
-function debounce(fn, delay) {
-  let timer;
-  return (...args) =&gt; {
-    clearTimeout(timer);
-    timer = setTimeout(() =&gt; fn(...args), delay);
-  };
-}
-
-function render(list) {
-  document.getElementById('results').innerHTML =
-    list.map(item =&gt; `&lt;li&gt;${item}&lt;/li&gt;`).join('');
-}
-
-const onSearch = debounce((query) =&gt; {
-  const filtered = items.filter(i =&gt;
-    i.toLowerCase().includes(query.toLowerCase())
-  );
-  render(filtered);   // TODO: replace with your real filtering logic
-}, 200);
-
-document.getElementById('search').addEventListener('input', (e) =&gt; {
-  onSearch(e.target.value);
-});
-
-render(items);
-&lt;/script&gt;</code></pre>
-            <pre class="code-panel" data-lang="python"><code>from flask import Flask, render_template_string, request, jsonify
-
-app = Flask(__name__)
-
-# ── DATA ──────────────────────────────────
-ITEMS = ["Apple", "Banana", "Cherry"]   # TODO: your real data
-
-PAGE = """
-&lt;input id="search" placeholder="Search..." /&gt;
-&lt;ul id="results"&gt;&lt;/ul&gt;
-&lt;script&gt;
-let timer;
-document.getElementById('search').addEventListener('input', (e) =&gt; {
-  clearTimeout(timer);
-  timer = setTimeout(() =&gt; search(e.target.value), 200);
-});
-async function search(query) {
-  const res = await fetch(`/search?q=${encodeURIComponent(query)}`);
-  const data = await res.json();
-  document.getElementById('results').innerHTML =
-    data.items.map(i =&gt; `&lt;li&gt;${i}&lt;/li&gt;`).join('');
-}
-search('');
-&lt;/script&gt;
-"""
-
-@app.route("/")
-def index():
-    return render_template_string(PAGE)
-
-@app.route("/search")
-def search():
-    query = request.args.get("q", "").lower()
-    matches = [i for i in ITEMS if query in i.lower()]   # TODO: replace with your real logic
-    return jsonify({"items": matches})
-
-if __name__ == "__main__":
-    app.run(debug=True)</code></pre>
-          </div>
-        </details>
-        <div class="script-footer">
-          <span class="pill">Starting point, not a final answer</span>
-          <a class="btn-small-coffee" href="https://www.buymeacoffee.com/echosw" target="_blank" rel="noopener">☕ This one helped</a>
-        </div>
-      </div>
-
-      <!-- DATA FETCHER -->
-      <div class="script-card" data-category="web">
-        <div class="script-head">
-          <div>
-            <h3>API Data Fetcher — Loading &amp; Error States</h3>
-            <p>The three-state fetch pattern every UI needs: loading, error, and success, handled once.</p>
-            <div class="script-meta"><span class="pill">web app</span><span class="pill">API</span></div>
-          </div>
-        </div>
-        <details>
-          <summary>View skeleton script</summary>
-          <div class="lang-tabs">
-            <button class="lang-tab active" data-lang="js">Vanilla JS</button>
-            <button class="lang-tab" data-lang="python">Python (requests)</button>
-          </div>
-          <div class="code-inner">
-            <pre class="code-panel active" data-lang="js"><code>&lt;!-- index.html — open directly in a browser, no server needed --&gt;
-&lt;div id="app"&gt;&lt;/div&gt;
-&lt;script&gt;
-// ── CONFIG ────────────────────────────────
-const API_URL = "https://api.example.com/data";   // TODO: your endpoint
-
-const state = { status: "loading", data: null, error: null };
-
-function render() {
-  const app = document.getElementById('app');
-  if (state.status === "loading") {
-    app.innerHTML = "&lt;p&gt;Loading...&lt;/p&gt;";
-  } else if (state.status === "error") {
-    app.innerHTML = `&lt;p&gt;Something went wrong: ${state.error}&lt;/p&gt;`;
-  } else {
-    // TODO: replace with your real rendering
-    app.innerHTML = `&lt;pre&gt;${JSON.stringify(state.data, null, 2)}&lt;/pre&gt;`;
-  }
-}
-
-async function load() {
-  state.status = "loading";
-  render();
-  try {
-    const res = await fetch(API_URL);
-    if (!res.ok) throw new Error(`HTTP ${res.status}`);
-    state.data = await res.json();
-    state.status = "success";
-  } catch (err) {
-    state.error = err.message;
-    state.status = "error";
-  }
-  render();
-}
-
-load();
-&lt;/script&gt;</code></pre>
-            <pre class="code-panel" data-lang="python"><code>import requests
-import time
-
-# ── CONFIG ────────────────────────────────
-API_URL = "https://api.example.com/data"   # TODO: your endpoint
-MAX_RETRIES = 3
-RETRY_DELAY = 1.5   # seconds
-
-def load(url):
-    last_error = None
-    for attempt in range(1, MAX_RETRIES + 1):
-        try:
-            resp = requests.get(url, timeout=5)
-            resp.raise_for_status()
-            return resp.json()
-        except requests.RequestException as e:
-            last_error = e
-            print(f"Attempt {attempt} failed: {e}")
-            time.sleep(RETRY_DELAY)
-    raise RuntimeError(f"Giving up after {MAX_RETRIES} attempts: {last_error}")
-
-if __name__ == "__main__":
-    try:
-        data = load(API_URL)
-        print(data)   # TODO: replace with your real handling
-    except RuntimeError as e:
-        print(f"Error: {e}")</code></pre>
-          </div>
-        </details>
-        <div class="script-footer">
-          <span class="pill">Starting point, not a final answer</span>
-          <a class="btn-small-coffee" href="https://www.buymeacoffee.com/echosw" target="_blank" rel="noopener">☕ This one helped</a>
-        </div>
-      </div>
-
-      <!-- REST API -->
-      <div class="script-card" data-category="backend">
-        <div class="script-head">
-          <div>
-            <h3>REST API Starter</h3>
-            <p>Basic CRUD endpoints wired up and ready to point at a real data store.</p>
-            <div class="script-meta"><span class="pill">backend</span><span class="pill">API</span></div>
-          </div>
-        </div>
-        <details>
-          <summary>View skeleton script</summary>
-          <div class="lang-tabs">
-            <button class="lang-tab active" data-lang="python">Python (FastAPI)</button>
-            <button class="lang-tab" data-lang="js">Node (Express)</button>
-          </div>
-          <div class="code-inner">
-            <pre class="code-panel active" data-lang="python"><code>from fastapi import FastAPI, HTTPException
-from pydantic import BaseModel
-
-app = FastAPI()
-
-# ── MODEL ─────────────────────────────────
-class Item(BaseModel):
-    name: str          # TODO: shape this to your data
-
-db: list[Item] = []
-
-@app.get("/items")
-def list_items():
-    return db
-
-@app.post("/items")
-def create_item(item: Item):
-    db.append(item)
-    return item
-
-@app.get("/items/{item_id}")
-def get_item(item_id: int):
-    if item_id >= len(db):
-        raise HTTPException(status_code=404, detail="Not found")
-    return db[item_id]
-
-@app.delete("/items/{item_id}")
-def delete_item(item_id: int):
-    if item_id >= len(db):
-        raise HTTPException(status_code=404, detail="Not found")
-    return db.pop(item_id)
-
-# Run with: uvicorn main:app --reload</code></pre>
-            <pre class="code-panel" data-lang="js"><code>const express = require('express');
-const app = express();
-app.use(express.json());
-
-// ── STATE ─────────────────────────────────
-let items = [];   // TODO: shape this to your data
-
-app.get('/items', (req, res) =&gt; {
-  res.json(items);
-});
-
-app.post('/items', (req, res) =&gt; {
-  const item = req.body;   // TODO: validate
-  items.push(item);
-  res.status(201).json(item);
-});
-
-app.get('/items/:id', (req, res) =&gt; {
-  const item = items[req.params.id];
-  if (!item) return res.status(404).json({ error: 'Not found' });
-  res.json(item);
-});
-
-app.delete('/items/:id', (req, res) =&gt; {
-  if (!items[req.params.id]) return res.status(404).json({ error: 'Not found' });
-  const [removed] = items.splice(req.params.id, 1);
-  res.json(removed);
-});
-
-app.listen(3000, () =&gt; console.log('Listening on :3000'));</code></pre>
-          </div>
-        </details>
-        <div class="script-footer">
-          <span class="pill">Starting point, not a final answer</span>
-          <a class="btn-small-coffee" href="https://www.buymeacoffee.com/echosw" target="_blank" rel="noopener">☕ This one helped</a>
-        </div>
-      </div>
-
-      <!-- WEBSOCKET -->
-      <div class="script-card" data-category="backend">
-        <div class="script-head">
-          <div>
-            <h3>Realtime WebSocket Server</h3>
-            <p>Broadcasts every message to all connected clients — the base for chat, multiplayer, or live dashboards.</p>
-            <div class="script-meta"><span class="pill">backend</span><span class="pill">realtime</span></div>
-          </div>
-        </div>
-        <details>
-          <summary>View skeleton script</summary>
-          <div class="lang-tabs">
-            <button class="lang-tab active" data-lang="python">Python (websockets)</button>
-            <button class="lang-tab" data-lang="js">Node (ws)</button>
-          </div>
-          <div class="code-inner">
-            <pre class="code-panel active" data-lang="python"><code>import asyncio
-import websockets
-
-# ── STATE ─────────────────────────────────
-clients = set()
-
-async def handler(websocket):
-    clients.add(websocket)
-    try:
-        async for message in websocket:
-            # TODO: replace with your real message handling
-            for client in clients:
-                if client != websocket:
-                    await client.send(message)
-    finally:
-        clients.remove(websocket)
-
-async def main():
-    async with websockets.serve(handler, "0.0.0.0", 8765):
-        await asyncio.Future()
-
-if __name__ == "__main__":
-    asyncio.run(main())</code></pre>
-            <pre class="code-panel" data-lang="js"><code>const { WebSocketServer } = require('ws');
-const wss = new WebSocketServer({ port: 8765 });
-
-// ── STATE ─────────────────────────────────
-const clients = new Set();
-
-wss.on('connection', (ws) =&gt; {
-  clients.add(ws);
-
-  ws.on('message', (data) =&gt; {
-    // TODO: replace with your real message handling
-    for (const client of clients) {
-      if (client !== ws) client.send(data.toString());
-    }
-  });
-
-  ws.on('close', () =&gt; clients.delete(ws));
-});
-
-console.log('WebSocket server on :8765');</code></pre>
-          </div>
-        </details>
-        <div class="script-footer">
-          <span class="pill">Starting point, not a final answer</span>
-          <a class="btn-small-coffee" href="https://www.buymeacoffee.com/echosw" target="_blank" rel="noopener">☕ This one helped</a>
-        </div>
-      </div>
-
-      <!-- SQLITE PERSISTENCE -->
-      <div class="script-card" data-category="backend">
-        <div class="script-head">
-          <div>
-            <h3>SQLite Persistence Layer</h3>
-            <p>A tiny data layer with a real table and connection handling, so you stop losing state on restart.</p>
-            <div class="script-meta"><span class="pill">backend</span><span class="pill">database</span></div>
-          </div>
-        </div>
-        <details>
-          <summary>View skeleton script</summary>
-          <div class="lang-tabs">
-            <button class="lang-tab active" data-lang="python">Python (sqlite3)</button>
-            <button class="lang-tab" data-lang="js">Node (better-sqlite3)</button>
-          </div>
-          <div class="code-inner">
-            <pre class="code-panel active" data-lang="python"><code>import sqlite3
-
-# ── CONFIG ────────────────────────────────
-DB_PATH = "app.db"   # TODO: your database file
-
-def get_connection():
-    conn = sqlite3.connect(DB_PATH)
-    conn.row_factory = sqlite3.Row
-    return conn
-
-def init_db():
-    with get_connection() as conn:
-        conn.execute("""
-            CREATE TABLE IF NOT EXISTS items (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
-                name TEXT NOT NULL
-            )
-        """)   # TODO: shape this to your data
-
-def add_item(name):
-    with get_connection() as conn:
-        cur = conn.execute("INSERT INTO items (name) VALUES (?)", (name,))
-        return cur.lastrowid
-
-def list_items():
-    with get_connection() as conn:
-        rows = conn.execute("SELECT * FROM items").fetchall()
-        return [dict(row) for row in rows]
-
-def delete_item(item_id):
-    with get_connection() as conn:
-        conn.execute("DELETE FROM items WHERE id = ?", (item_id,))
-
-if __name__ == "__main__":
-    init_db()
-    add_item("Example")   # TODO: replace with your real logic
-    print(list_items())</code></pre>
-            <pre class="code-panel" data-lang="js"><code>const Database = require('better-sqlite3');
-
-// ── CONFIG ────────────────────────────────
-const DB_PATH = 'app.db';   // TODO: your database file
-
-const db = new Database(DB_PATH);
-
-function initDb() {
-  db.exec(`
-    CREATE TABLE IF NOT EXISTS items (
-      id INTEGER PRIMARY KEY AUTOINCREMENT,
-      name TEXT NOT NULL
-    )
-  `);   // TODO: shape this to your data
-}
-
-function addItem(name) {
-  const stmt = db.prepare('INSERT INTO items (name) VALUES (?)');
-  const info = stmt.run(name);
-  return info.lastInsertRowid;
-}
-
-function listItems() {
-  return db.prepare('SELECT * FROM items').all();
-}
-
-function deleteItem(id) {
-  db.prepare('DELETE FROM items WHERE id = ?').run(id);
-}
-
-initDb();
-addItem('Example');   // TODO: replace with your real logic
-console.log(listItems());</code></pre>
-          </div>
-        </details>
-        <div class="script-footer">
-          <span class="pill">Starting point, not a final answer</span>
-          <a class="btn-small-coffee" href="https://www.buymeacoffee.com/echosw" target="_blank" rel="noopener">☕ This one helped</a>
-        </div>
-      </div>
-
-      <!-- FILE WATCHER -->
-      <div class="script-card" data-category="tooling">
-        <div class="script-head">
-          <div>
-            <h3>File Watcher &amp; Automation</h3>
-            <p>Watches a folder and fires your own logic on any create, edit, or delete.</p>
-            <div class="script-meta"><span class="pill">automation</span><span class="pill">tooling</span></div>
-          </div>
-        </div>
-        <details>
-          <summary>View skeleton script</summary>
-          <div class="lang-tabs">
-            <button class="lang-tab active" data-lang="python">Python</button>
-            <button class="lang-tab" data-lang="js">Node</button>
-          </div>
-          <div class="code-inner">
-            <pre class="code-panel active" data-lang="python"><code>import time
-import os
-
-# ── CONFIG ────────────────────────────────
-WATCH_DIR = "./watched"     # TODO: folder to watch
-POLL_SECONDS = 2
-
-def on_change(filename, event):
-    # TODO: replace with your real action
-    print(f"[{event}] {filename}")
-
-def watch():
-    os.makedirs(WATCH_DIR, exist_ok=True)
-    seen = {f: os.path.getmtime(os.path.join(WATCH_DIR, f))
-            for f in os.listdir(WATCH_DIR)}
-
-    while True:
-        time.sleep(POLL_SECONDS)
-        current = os.listdir(WATCH_DIR)
-
-        for f in current:
-            path = os.path.join(WATCH_DIR, f)
-            mtime = os.path.getmtime(path)
-            if f not in seen:
-                on_change(f, "created")
-            elif mtime != seen[f]:
-                on_change(f, "modified")
-            seen[f] = mtime
-
-        for f in list(seen):
-            if f not in current:
-                on_change(f, "deleted")
-                del seen[f]
-
-if __name__ == "__main__":
-    watch()</code></pre>
-            <pre class="code-panel" data-lang="js"><code>const fs = require('fs');
-const path = require('path');
-
-// ── CONFIG ────────────────────────────────
-const WATCH_DIR = './watched';   // TODO: folder to watch
-
-fs.mkdirSync(WATCH_DIR, { recursive: true });
-
-function onChange(filename, eventType) {
-  // TODO: replace with your real action
-  console.log(`[${eventType}] ${filename}`);
-}
-
-fs.watch(WATCH_DIR, (eventType, filename) =&gt; {
-  if (filename) onChange(filename, eventType);
-});
-
-console.log(`Watching ${path.resolve(WATCH_DIR)}...`);</code></pre>
-          </div>
-        </details>
-        <div class="script-footer">
-          <span class="pill">Starting point, not a final answer</span>
-          <a class="btn-small-coffee" href="https://www.buymeacoffee.com/echosw" target="_blank" rel="noopener">☕ This one helped</a>
-        </div>
-      </div>
-
-      <!-- CLI TOOL -->
-      <div class="script-card" data-category="tooling">
-        <div class="script-head">
-          <div>
-            <h3>CLI Tool Starter</h3>
-            <p>Argument parsing, verbose flag, and file output already wired up.</p>
-            <div class="script-meta"><span class="pill">CLI</span><span class="pill">tooling</span></div>
-          </div>
-        </div>
-        <details>
-          <summary>View skeleton script</summary>
-          <div class="lang-tabs">
-            <button class="lang-tab active" data-lang="python">Python</button>
-            <button class="lang-tab" data-lang="js">Node</button>
-          </div>
-          <div class="code-inner">
-            <pre class="code-panel active" data-lang="python"><code>import argparse
-
-def main():
-    parser = argparse.ArgumentParser(description="TODO: describe your tool")
-    parser.add_argument("input", help="Input file or value")
-    parser.add_argument("-o", "--output", default=None, help="Output path")
-    parser.add_argument("-v", "--verbose", action="store_true")
-    args = parser.parse_args()
-
-    if args.verbose:
-        print(f"Processing: {args.input}")
-
-    result = process(args.input)   # TODO: your real logic
-
-    if args.output:
-        with open(args.output, "w") as f:
-            f.write(result)
-    else:
-        print(result)
-
-def process(value):
-    return value.upper()   # TODO: replace
-
-if __name__ == "__main__":
-    main()</code></pre>
-            <pre class="code-panel" data-lang="js"><code>#!/usr/bin/env node
-const args = process.argv.slice(2);
-
-// ── PARSE ─────────────────────────────────
-const input = args[0];
-const verbose = args.includes('-v') || args.includes('--verbose');
-const outIndex = args.findIndex(a =&gt; a === '-o' || a === '--output');
-const output = outIndex !== -1 ? args[outIndex + 1] : null;
-
-if (!input) {
-  console.error('Usage: mytool &lt;input&gt; [-o output] [-v]');
-  process.exit(1);
-}
-
-if (verbose) console.error(`Processing: ${input}`);
-
-const result = transform(input);   // TODO: your real logic
-
-if (output) {
-  require('fs').writeFileSync(output, result);
-} else {
-  console.log(result);
-}
-
-function transform(value) {
-  return value.toUpperCase();   // TODO: replace
-}</code></pre>
-          </div>
-        </details>
-        <div class="script-footer">
-          <span class="pill">Starting point, not a final answer</span>
-          <a class="btn-small-coffee" href="https://www.buymeacoffee.com/echosw" target="_blank" rel="noopener">☕ This one helped</a>
-        </div>
-      </div>
-
-      <!-- SCHEDULED TASK RUNNER -->
-      <div class="script-card" data-category="tooling">
-        <div class="script-head">
-          <div>
-            <h3>Scheduled Task Runner</h3>
-            <p>Runs jobs on a recurring schedule without cron or a task scheduler service.</p>
-            <div class="script-meta"><span class="pill">automation</span><span class="pill">tooling</span></div>
-          </div>
-        </div>
-        <details>
-          <summary>View skeleton script</summary>
-          <div class="lang-tabs">
-            <button class="lang-tab active" data-lang="python">Python</button>
-            <button class="lang-tab" data-lang="js">Node</button>
-          </div>
-          <div class="code-inner">
-            <pre class="code-panel active" data-lang="python"><code>import time
-import schedule   # pip install schedule
-
-# ── JOBS ──────────────────────────────────
-def job():
-    # TODO: replace with your real task
-    print("Running scheduled job...")
-
-# ── SCHEDULE ──────────────────────────────
-schedule.every(1).hours.do(job)          # TODO: adjust interval
-schedule.every().day.at("09:00").do(job) # TODO: or use a fixed time
-
-if __name__ == "__main__":
-    print("Scheduler started, waiting for jobs...")
-    while True:
-        schedule.run_pending()
-        time.sleep(1)</code></pre>
-            <pre class="code-panel" data-lang="js"><code>const cron = require('node-cron');   // npm install node-cron
-
-// ── JOBS ──────────────────────────────────
-function job() {
-  // TODO: replace with your real task
-  console.log('Running scheduled job...');
-}
-
-// ── SCHEDULE ──────────────────────────────
-cron.schedule('0 * * * *', job);     // TODO: adjust — this runs hourly
-cron.schedule('0 9 * * *', job);     // TODO: or a fixed daily time
-
-console.log('Scheduler started, waiting for jobs...');</code></pre>
-          </div>
-        </details>
-        <div class="script-footer">
-          <span class="pill">Starting point, not a final answer</span>
-          <a class="btn-small-coffee" href="https://www.buymeacoffee.com/echosw" target="_blank" rel="noopener">☕ This one helped</a>
-        </div>
-      </div>
-
+      <!-- Cards are rendered into this grid by script.js from scripts-data.js.
+           Keeping the data in one JSON-shaped file (instead of hand-written
+           per-card HTML) is what makes adding #15 a one-entry edit instead of
+           a copy-paste-and-hope-you-got-the-closing-divs-right job. -->
+      <div id="script-grid" class="script-grid" aria-live="polite"></div>
     </div>
   </section>
 </main>
@@ -1274,32 +108,96 @@ console.log('Scheduler started, waiting for jobs...');</code></pre>
   </div>
 </footer>
 
+<script src="scripts-data.js"></script>
 <script>
-// Language tab switching
-document.querySelectorAll('.script-card').forEach(card => {
-  const tabs = card.querySelectorAll('.lang-tab');
-  const panels = card.querySelectorAll('.code-panel');
-  tabs.forEach(tab => {
-    tab.addEventListener('click', () => {
-      tabs.forEach(t => t.classList.remove('active'));
-      panels.forEach(p => p.classList.remove('active'));
-      tab.classList.add('active');
-      card.querySelector(`.code-panel[data-lang="${tab.dataset.lang}"]`).classList.add('active');
-    });
-  });
-});
+(function () {
+  const grid = document.getElementById('script-grid');
 
-// Category filter
-document.querySelectorAll('.filter-btn').forEach(btn => {
-  btn.addEventListener('click', () => {
-    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
-    const filter = btn.dataset.filter;
-    document.querySelectorAll('.script-card').forEach(card => {
-      card.style.display = (filter === 'all' || card.dataset.category === filter) ? '' : 'none';
+  function escapeHtml(str) {
+    return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  }
+
+  // ── Build one card's head/tabs/footer eagerly (cheap, text-only).
+  //    The actual code strings are NOT put in the DOM here — each
+  //    <pre> stays empty until its <details> is opened for the first
+  //    time, so a page with 50 scripts still parses/paints like a
+  //    page with 5. See fillCodePanels() below.
+  function buildCard(script) {
+    const card = document.createElement('div');
+    card.className = 'script-card';
+    card.dataset.category = script.category;
+    card.dataset.slug = script.slug;
+
+    const tagsHtml = script.tags.map(t => `<span class="pill">${escapeHtml(t)}</span>`).join('');
+    const tabsHtml = script.langs.map((lang, i) =>
+      `<button class="lang-tab${i === 0 ? ' active' : ''}" data-lang="${lang.id}">${escapeHtml(lang.label)}</button>`
+    ).join('');
+    const panelsHtml = script.langs.map((lang, i) =>
+      `<pre class="code-panel${i === 0 ? ' active' : ''}" data-lang="${lang.id}"><code></code></pre>`
+    ).join('');
+
+    card.innerHTML = `
+      <div class="script-head">
+        <div>
+          <h3>${escapeHtml(script.title)}</h3>
+          <p>${escapeHtml(script.summary)}</p>
+          <div class="script-meta">${tagsHtml}</div>
+        </div>
+      </div>
+      <details>
+        <summary>View skeleton script</summary>
+        <div class="lang-tabs">${tabsHtml}</div>
+        <div class="code-inner">${panelsHtml}</div>
+      </details>
+      <div class="script-footer">
+        <span class="pill">Starting point, not a final answer</span>
+        <a class="btn-small-coffee" href="https://www.buymeacoffee.com/echosw" target="_blank" rel="noopener">☕ This one helped</a>
+      </div>
+    `;
+
+    const details = card.querySelector('details');
+    let filled = false;
+
+    details.addEventListener('toggle', () => {
+      card.classList.toggle('details-open', details.open);
+      if (details.open && !filled) {
+        script.langs.forEach(lang => {
+          const codeEl = card.querySelector(`.code-panel[data-lang="${lang.id}"] code`);
+          codeEl.textContent = lang.code;   // textContent, not innerHTML — no escaping bugs, no injection risk
+        });
+        filled = true;
+      }
+    });
+
+    // Language tab switching
+    const tabs = card.querySelectorAll('.lang-tab');
+    const panels = card.querySelectorAll('.code-panel');
+    tabs.forEach(tab => {
+      tab.addEventListener('click', () => {
+        tabs.forEach(t => t.classList.remove('active'));
+        panels.forEach(p => p.classList.remove('active'));
+        tab.classList.add('active');
+        card.querySelector(`.code-panel[data-lang="${tab.dataset.lang}"]`).classList.add('active');
+      });
+    });
+
+    return card;
+  }
+
+  SCRIPTS_DATA.forEach(script => grid.appendChild(buildCard(script)));
+
+  // Category filter
+  document.querySelectorAll('.filter-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      const filter = btn.dataset.filter;
+      document.querySelectorAll('.script-card').forEach(card => {
+        card.style.display = (filter === 'all' || card.dataset.category === filter) ? '' : 'none';
+      });
     });
   });
-});
+})();
 </script>
 
 </body>

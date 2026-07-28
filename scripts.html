@@ -359,6 +359,169 @@ while True:
         </div>
       </div>
 
+      <!-- TEMP/HUMIDITY SENSOR -->
+      <div class="script-card" data-category="hardware">
+        <div class="script-head">
+          <div>
+            <h3>Temperature &amp; Humidity Sensor Reader</h3>
+            <p>Poll a DHT22 on an interval and hand off clean readings, with bad-read retries baked in.</p>
+            <div class="script-meta"><span class="pill">sensors</span><span class="pill">embedded</span></div>
+          </div>
+        </div>
+        <details>
+          <summary>View skeleton script</summary>
+          <div class="lang-tabs">
+            <button class="lang-tab active" data-lang="cpp">Arduino C++</button>
+            <button class="lang-tab" data-lang="python">CircuitPython</button>
+          </div>
+          <div class="code-inner">
+            <pre class="code-panel active" data-lang="cpp"><code>#include &lt;DHT.h&gt;
+
+// ── CONFIG ────────────────────────────────
+#define DHT_PIN     2        // TODO: your data pin
+#define DHT_TYPE    DHT22
+const unsigned long READ_INTERVAL = 2000;  // ms, DHT22 min ~2s
+
+DHT dht(DHT_PIN, DHT_TYPE);
+unsigned long lastRead = 0;
+
+void setup() {
+  Serial.begin(9600);
+  dht.begin();
+}
+
+void loop() {
+  if (millis() - lastRead >= READ_INTERVAL) {
+    lastRead = millis();
+    readSensor();
+  }
+  // TODO: replace the Serial print with your real logic
+}
+
+void readSensor() {
+  float humidity = dht.readHumidity();
+  float tempC = dht.readTemperature();
+
+  if (isnan(humidity) || isnan(tempC)) {
+    Serial.println("Read failed, will retry next interval");
+    return;
+  }
+
+  Serial.print("Temp: "); Serial.print(tempC);
+  Serial.print("C  Humidity: "); Serial.print(humidity); Serial.println("%");
+}</code></pre>
+            <pre class="code-panel" data-lang="python"><code>import time
+import board
+import adafruit_dht
+
+# ── CONFIG ────────────────────────────────
+DHT_PIN = board.D2       # TODO: your data pin
+READ_INTERVAL = 2.0      # seconds, DHT22 min ~2s
+
+dht = adafruit_dht.DHT22(DHT_PIN)
+
+def read_sensor():
+    try:
+        temp_c = dht.temperature
+        humidity = dht.humidity
+        print(f"Temp: {temp_c}C  Humidity: {humidity}%")
+        return temp_c, humidity
+    except RuntimeError as e:
+        # DHT sensors drop reads often — this is normal, just retry
+        print(f"Read failed ({e.args[0]}), will retry next interval")
+        return None, None
+
+while True:
+    read_sensor()   # TODO: replace with your real logic
+    time.sleep(READ_INTERVAL)</code></pre>
+          </div>
+        </details>
+        <div class="script-footer">
+          <span class="pill">Starting point, not a final answer</span>
+          <a class="btn-small-coffee" href="https://www.buymeacoffee.com/echosw" target="_blank" rel="noopener">☕ This one helped</a>
+        </div>
+      </div>
+
+      <!-- BUTTON DEBOUNCE -->
+      <div class="script-card" data-category="hardware">
+        <div class="script-head">
+          <div>
+            <h3>Button Input &amp; Debounce</h3>
+            <p>Clean single-press detection from a noisy mechanical switch — no phantom double-fires.</p>
+            <div class="script-meta"><span class="pill">input</span><span class="pill">embedded</span></div>
+          </div>
+        </div>
+        <details>
+          <summary>View skeleton script</summary>
+          <div class="lang-tabs">
+            <button class="lang-tab active" data-lang="cpp">Arduino C++</button>
+            <button class="lang-tab" data-lang="python">Raspberry Pi (Python)</button>
+          </div>
+          <div class="code-inner">
+            <pre class="code-panel active" data-lang="cpp"><code>// ── CONFIG ────────────────────────────────
+const int BUTTON_PIN = 2;         // TODO: your input pin
+const unsigned long DEBOUNCE_MS = 40;
+
+int lastReading = HIGH;
+int stableState = HIGH;
+unsigned long lastChangeTime = 0;
+
+void setup() {
+  Serial.begin(9600);
+  pinMode(BUTTON_PIN, INPUT_PULLUP);   // wired to GND when pressed
+}
+
+void loop() {
+  int reading = digitalRead(BUTTON_PIN);
+
+  if (reading != lastReading) {
+    lastChangeTime = millis();
+  }
+
+  if (millis() - lastChangeTime > DEBOUNCE_MS) {
+    if (reading != stableState) {
+      stableState = reading;
+      if (stableState == LOW) {
+        onPress();   // TODO: replace with your real logic
+      }
+    }
+  }
+
+  lastReading = reading;
+}
+
+void onPress() {
+  Serial.println("Button pressed");
+}</code></pre>
+            <pre class="code-panel" data-lang="python"><code>import RPi.GPIO as GPIO
+import time
+
+# ── CONFIG ────────────────────────────────
+BUTTON_PIN = 17     # TODO: your input pin
+DEBOUNCE_MS = 200
+
+def on_press(channel):
+    # TODO: replace with your real logic
+    print("Button pressed")
+
+GPIO.setmode(GPIO.BCM)
+GPIO.setup(BUTTON_PIN, GPIO.IN, pull_up_down=GPIO.PUD_UP)
+GPIO.add_event_detect(BUTTON_PIN, GPIO.FALLING,
+                       callback=on_press, bouncetime=DEBOUNCE_MS)
+
+try:
+    while True:
+        time.sleep(1)
+except KeyboardInterrupt:
+    GPIO.cleanup()</code></pre>
+          </div>
+        </details>
+        <div class="script-footer">
+          <span class="pill">Starting point, not a final answer</span>
+          <a class="btn-small-coffee" href="https://www.buymeacoffee.com/echosw" target="_blank" rel="noopener">☕ This one helped</a>
+        </div>
+      </div>
+
       <!-- WEB APP -->
       <div class="script-card" data-category="web">
         <div class="script-head">
@@ -452,6 +615,190 @@ def remove_item(i):
 
 if __name__ == "__main__":
     app.run(debug=True)</code></pre>
+          </div>
+        </details>
+        <div class="script-footer">
+          <span class="pill">Starting point, not a final answer</span>
+          <a class="btn-small-coffee" href="https://www.buymeacoffee.com/echosw" target="_blank" rel="noopener">☕ This one helped</a>
+        </div>
+      </div>
+
+      <!-- LIVE SEARCH -->
+      <div class="script-card" data-category="web">
+        <div class="script-head">
+          <div>
+            <h3>Debounced Live Search / Filter</h3>
+            <p>Filters a list as the user types without hammering re-renders on every keystroke.</p>
+            <div class="script-meta"><span class="pill">web app</span><span class="pill">no build</span></div>
+          </div>
+        </div>
+        <details>
+          <summary>View skeleton script</summary>
+          <div class="lang-tabs">
+            <button class="lang-tab active" data-lang="js">Vanilla JS</button>
+            <button class="lang-tab" data-lang="python">Python (Flask)</button>
+          </div>
+          <div class="code-inner">
+            <pre class="code-panel active" data-lang="js"><code>&lt;!-- index.html — open directly in a browser, no server needed --&gt;
+&lt;input id="search" placeholder="Search..." /&gt;
+&lt;ul id="results"&gt;&lt;/ul&gt;
+&lt;script&gt;
+// ── DATA ──────────────────────────────────
+const items = ["Apple", "Banana", "Cherry"];   // TODO: your real data
+
+// ── DEBOUNCE HELPER ───────────────────────
+function debounce(fn, delay) {
+  let timer;
+  return (...args) =&gt; {
+    clearTimeout(timer);
+    timer = setTimeout(() =&gt; fn(...args), delay);
+  };
+}
+
+function render(list) {
+  document.getElementById('results').innerHTML =
+    list.map(item =&gt; `&lt;li&gt;${item}&lt;/li&gt;`).join('');
+}
+
+const onSearch = debounce((query) =&gt; {
+  const filtered = items.filter(i =&gt;
+    i.toLowerCase().includes(query.toLowerCase())
+  );
+  render(filtered);   // TODO: replace with your real filtering logic
+}, 200);
+
+document.getElementById('search').addEventListener('input', (e) =&gt; {
+  onSearch(e.target.value);
+});
+
+render(items);
+&lt;/script&gt;</code></pre>
+            <pre class="code-panel" data-lang="python"><code>from flask import Flask, render_template_string, request, jsonify
+
+app = Flask(__name__)
+
+# ── DATA ──────────────────────────────────
+ITEMS = ["Apple", "Banana", "Cherry"]   # TODO: your real data
+
+PAGE = """
+&lt;input id="search" placeholder="Search..." /&gt;
+&lt;ul id="results"&gt;&lt;/ul&gt;
+&lt;script&gt;
+let timer;
+document.getElementById('search').addEventListener('input', (e) =&gt; {
+  clearTimeout(timer);
+  timer = setTimeout(() =&gt; search(e.target.value), 200);
+});
+async function search(query) {
+  const res = await fetch(`/search?q=${encodeURIComponent(query)}`);
+  const data = await res.json();
+  document.getElementById('results').innerHTML =
+    data.items.map(i =&gt; `&lt;li&gt;${i}&lt;/li&gt;`).join('');
+}
+search('');
+&lt;/script&gt;
+"""
+
+@app.route("/")
+def index():
+    return render_template_string(PAGE)
+
+@app.route("/search")
+def search():
+    query = request.args.get("q", "").lower()
+    matches = [i for i in ITEMS if query in i.lower()]   # TODO: replace with your real logic
+    return jsonify({"items": matches})
+
+if __name__ == "__main__":
+    app.run(debug=True)</code></pre>
+          </div>
+        </details>
+        <div class="script-footer">
+          <span class="pill">Starting point, not a final answer</span>
+          <a class="btn-small-coffee" href="https://www.buymeacoffee.com/echosw" target="_blank" rel="noopener">☕ This one helped</a>
+        </div>
+      </div>
+
+      <!-- DATA FETCHER -->
+      <div class="script-card" data-category="web">
+        <div class="script-head">
+          <div>
+            <h3>API Data Fetcher — Loading &amp; Error States</h3>
+            <p>The three-state fetch pattern every UI needs: loading, error, and success, handled once.</p>
+            <div class="script-meta"><span class="pill">web app</span><span class="pill">API</span></div>
+          </div>
+        </div>
+        <details>
+          <summary>View skeleton script</summary>
+          <div class="lang-tabs">
+            <button class="lang-tab active" data-lang="js">Vanilla JS</button>
+            <button class="lang-tab" data-lang="python">Python (requests)</button>
+          </div>
+          <div class="code-inner">
+            <pre class="code-panel active" data-lang="js"><code>&lt;!-- index.html — open directly in a browser, no server needed --&gt;
+&lt;div id="app"&gt;&lt;/div&gt;
+&lt;script&gt;
+// ── CONFIG ────────────────────────────────
+const API_URL = "https://api.example.com/data";   // TODO: your endpoint
+
+const state = { status: "loading", data: null, error: null };
+
+function render() {
+  const app = document.getElementById('app');
+  if (state.status === "loading") {
+    app.innerHTML = "&lt;p&gt;Loading...&lt;/p&gt;";
+  } else if (state.status === "error") {
+    app.innerHTML = `&lt;p&gt;Something went wrong: ${state.error}&lt;/p&gt;`;
+  } else {
+    // TODO: replace with your real rendering
+    app.innerHTML = `&lt;pre&gt;${JSON.stringify(state.data, null, 2)}&lt;/pre&gt;`;
+  }
+}
+
+async function load() {
+  state.status = "loading";
+  render();
+  try {
+    const res = await fetch(API_URL);
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    state.data = await res.json();
+    state.status = "success";
+  } catch (err) {
+    state.error = err.message;
+    state.status = "error";
+  }
+  render();
+}
+
+load();
+&lt;/script&gt;</code></pre>
+            <pre class="code-panel" data-lang="python"><code>import requests
+import time
+
+# ── CONFIG ────────────────────────────────
+API_URL = "https://api.example.com/data"   # TODO: your endpoint
+MAX_RETRIES = 3
+RETRY_DELAY = 1.5   # seconds
+
+def load(url):
+    last_error = None
+    for attempt in range(1, MAX_RETRIES + 1):
+        try:
+            resp = requests.get(url, timeout=5)
+            resp.raise_for_status()
+            return resp.json()
+        except requests.RequestException as e:
+            last_error = e
+            print(f"Attempt {attempt} failed: {e}")
+            time.sleep(RETRY_DELAY)
+    raise RuntimeError(f"Giving up after {MAX_RETRIES} attempts: {last_error}")
+
+if __name__ == "__main__":
+    try:
+        data = load(API_URL)
+        print(data)   # TODO: replace with your real handling
+    except RuntimeError as e:
+        print(f"Error: {e}")</code></pre>
           </div>
         </details>
         <div class="script-footer">
@@ -614,6 +961,100 @@ console.log('WebSocket server on :8765');</code></pre>
         </div>
       </div>
 
+      <!-- SQLITE PERSISTENCE -->
+      <div class="script-card" data-category="backend">
+        <div class="script-head">
+          <div>
+            <h3>SQLite Persistence Layer</h3>
+            <p>A tiny data layer with a real table and connection handling, so you stop losing state on restart.</p>
+            <div class="script-meta"><span class="pill">backend</span><span class="pill">database</span></div>
+          </div>
+        </div>
+        <details>
+          <summary>View skeleton script</summary>
+          <div class="lang-tabs">
+            <button class="lang-tab active" data-lang="python">Python (sqlite3)</button>
+            <button class="lang-tab" data-lang="js">Node (better-sqlite3)</button>
+          </div>
+          <div class="code-inner">
+            <pre class="code-panel active" data-lang="python"><code>import sqlite3
+
+# ── CONFIG ────────────────────────────────
+DB_PATH = "app.db"   # TODO: your database file
+
+def get_connection():
+    conn = sqlite3.connect(DB_PATH)
+    conn.row_factory = sqlite3.Row
+    return conn
+
+def init_db():
+    with get_connection() as conn:
+        conn.execute("""
+            CREATE TABLE IF NOT EXISTS items (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                name TEXT NOT NULL
+            )
+        """)   # TODO: shape this to your data
+
+def add_item(name):
+    with get_connection() as conn:
+        cur = conn.execute("INSERT INTO items (name) VALUES (?)", (name,))
+        return cur.lastrowid
+
+def list_items():
+    with get_connection() as conn:
+        rows = conn.execute("SELECT * FROM items").fetchall()
+        return [dict(row) for row in rows]
+
+def delete_item(item_id):
+    with get_connection() as conn:
+        conn.execute("DELETE FROM items WHERE id = ?", (item_id,))
+
+if __name__ == "__main__":
+    init_db()
+    add_item("Example")   # TODO: replace with your real logic
+    print(list_items())</code></pre>
+            <pre class="code-panel" data-lang="js"><code>const Database = require('better-sqlite3');
+
+// ── CONFIG ────────────────────────────────
+const DB_PATH = 'app.db';   // TODO: your database file
+
+const db = new Database(DB_PATH);
+
+function initDb() {
+  db.exec(`
+    CREATE TABLE IF NOT EXISTS items (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      name TEXT NOT NULL
+    )
+  `);   // TODO: shape this to your data
+}
+
+function addItem(name) {
+  const stmt = db.prepare('INSERT INTO items (name) VALUES (?)');
+  const info = stmt.run(name);
+  return info.lastInsertRowid;
+}
+
+function listItems() {
+  return db.prepare('SELECT * FROM items').all();
+}
+
+function deleteItem(id) {
+  db.prepare('DELETE FROM items WHERE id = ?').run(id);
+}
+
+initDb();
+addItem('Example');   // TODO: replace with your real logic
+console.log(listItems());</code></pre>
+          </div>
+        </details>
+        <div class="script-footer">
+          <span class="pill">Starting point, not a final answer</span>
+          <a class="btn-small-coffee" href="https://www.buymeacoffee.com/echosw" target="_blank" rel="noopener">☕ This one helped</a>
+        </div>
+      </div>
+
       <!-- FILE WATCHER -->
       <div class="script-card" data-category="tooling">
         <div class="script-head">
@@ -760,6 +1201,60 @@ if (output) {
 function transform(value) {
   return value.toUpperCase();   // TODO: replace
 }</code></pre>
+          </div>
+        </details>
+        <div class="script-footer">
+          <span class="pill">Starting point, not a final answer</span>
+          <a class="btn-small-coffee" href="https://www.buymeacoffee.com/echosw" target="_blank" rel="noopener">☕ This one helped</a>
+        </div>
+      </div>
+
+      <!-- SCHEDULED TASK RUNNER -->
+      <div class="script-card" data-category="tooling">
+        <div class="script-head">
+          <div>
+            <h3>Scheduled Task Runner</h3>
+            <p>Runs jobs on a recurring schedule without cron or a task scheduler service.</p>
+            <div class="script-meta"><span class="pill">automation</span><span class="pill">tooling</span></div>
+          </div>
+        </div>
+        <details>
+          <summary>View skeleton script</summary>
+          <div class="lang-tabs">
+            <button class="lang-tab active" data-lang="python">Python</button>
+            <button class="lang-tab" data-lang="js">Node</button>
+          </div>
+          <div class="code-inner">
+            <pre class="code-panel active" data-lang="python"><code>import time
+import schedule   # pip install schedule
+
+# ── JOBS ──────────────────────────────────
+def job():
+    # TODO: replace with your real task
+    print("Running scheduled job...")
+
+# ── SCHEDULE ──────────────────────────────
+schedule.every(1).hours.do(job)          # TODO: adjust interval
+schedule.every().day.at("09:00").do(job) # TODO: or use a fixed time
+
+if __name__ == "__main__":
+    print("Scheduler started, waiting for jobs...")
+    while True:
+        schedule.run_pending()
+        time.sleep(1)</code></pre>
+            <pre class="code-panel" data-lang="js"><code>const cron = require('node-cron');   // npm install node-cron
+
+// ── JOBS ──────────────────────────────────
+function job() {
+  // TODO: replace with your real task
+  console.log('Running scheduled job...');
+}
+
+// ── SCHEDULE ──────────────────────────────
+cron.schedule('0 * * * *', job);     // TODO: adjust — this runs hourly
+cron.schedule('0 9 * * *', job);     // TODO: or a fixed daily time
+
+console.log('Scheduler started, waiting for jobs...');</code></pre>
           </div>
         </details>
         <div class="script-footer">

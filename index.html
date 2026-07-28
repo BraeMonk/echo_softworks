@@ -45,11 +45,16 @@
   "@context": "https://schema.org",
   "@type": "Organization",
   "name": "Echo Softworks",
-  "url": "https://braemonk.github.io/echo_softworks/",
+  "url": "https://www.echosoftworks.dev/",
   "description": "Small studio offering web design, software engineering, and hobby hardware builds, alongside a free open library of skeleton scripts for hobbyists.",
   "sameAs": [
     "https://www.buymeacoffee.com/echosw"
-  ]
+  ],
+  "contactPoint": {
+    "@type": "ContactPoint",
+    "email": "hello@echosoftworks.dev",
+    "contactType": "customer service"
+  }
 }
 </script>
 <script type="application/ld+json">
@@ -57,7 +62,7 @@
   "@context": "https://schema.org",
   "@type": "WebSite",
   "name": "Echo Softworks",
-  "url": "https://braemonk.github.io/echo_softworks/"
+  "url": "https://www.echosoftworks.dev/"
 }
 </script>
 <style>
@@ -71,8 +76,8 @@
     --fg-dim: #8CA39A;
     --green: #7CFFB2;
     --green-dim: rgba(124,255,178,0.12);
-    --amber: #FFB454;
-    --amber-dim: rgba(255,180,84,0.14);
+    --amber: #4AB685;
+    --amber-dim: rgba(74,182,133,0.14);
     --radius: 10px;
   }
   *{box-sizing:border-box;}
@@ -113,7 +118,7 @@
   .btn-coffee-nav{
     display:none; padding:8px 16px; border-radius:999px;
     background:var(--amber-dim); color:var(--amber);
-    border:1px solid rgba(255,180,84,0.35);
+    border:1px solid rgba(74,182,133,0.35);
     font-family:'JetBrains Mono', monospace; font-size:0.82rem;
     text-decoration:none; white-space:nowrap;
   }
@@ -182,7 +187,7 @@
   .code-panel.active{ display:block; }
   .code-inner{ background:#0B100E; border-top:1px solid var(--line-dim); padding-top:18px; }
   .script-footer{ display:flex; align-items:center; justify-content:space-between; padding:14px 24px; border-top:1px solid var(--line-dim); flex-wrap:wrap; gap:10px; }
-  .btn-small-coffee{ font-family:'JetBrains Mono', monospace; font-size:0.8rem; color:var(--amber); text-decoration:none; padding:7px 14px; border-radius:999px; background:var(--amber-dim); border:1px solid rgba(255,180,84,0.3); }
+  .btn-small-coffee{ font-family:'JetBrains Mono', monospace; font-size:0.8rem; color:var(--amber); text-decoration:none; padding:7px 14px; border-radius:999px; background:var(--amber-dim); border:1px solid rgba(74,182,133,0.3); }
 
   .support-band{ background:var(--panel-2); border:1px solid var(--line-dim); border-radius:14px; padding:44px 36px; text-align:center; }
   .support-band h2{margin-bottom:10px;}
@@ -972,6 +977,7 @@ function transform(value) {
       <div class="about-body">
         <p>Echo Softworks is a small studio doing web design, software engineering, and hobby hardware builds — the paid work that keeps the lights on.</p>
         <p>The skeleton script library exists because the blank-page problem is real, and we've hit it enough times ourselves to know exactly where hobbyists get stuck. Every script here is something we'd have wanted on day one of a new project.</p>
+        <p>Got a project in mind? <a href="mailto:hello@echosoftworks.dev" style="color:var(--green); text-decoration:underline;">Email us at hello@echosoftworks.dev</a> — we usually reply within a couple of business days.</p>
       </div>
     </div>
   </section>
@@ -1019,7 +1025,7 @@ function transform(value) {
     ctx.clearRect(0,0,w,h);
     const phase = t * 0.0009;
     drawWave(phase, 46, 'rgba(124,255,178,0.55)', 2);
-    drawWave(phase + 0.6, 46, 'rgba(255,180,84,0.4)', 2);
+    drawWave(phase + 0.6, 46, 'rgba(74,182,133,0.4)', 2);
     if(!reduceMotion){
       requestAnimationFrame(frame);
     }

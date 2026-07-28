@@ -3,27 +3,81 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Echo Softworks — Web &amp; Software, Built From Scratch</title>
+
+<!-- Primary SEO -->
+<title>Echo Softworks | Web Design, Software &amp; Hardware Studio + Free Skeleton Scripts</title>
+<meta name="description" content="Echo Softworks is a small studio building web design, custom software, and one-off hardware. Browse our free, open skeleton scripts for servos, motors, LEDs, APIs, WebSockets, and CLI tools — no sign-up required.">
+<meta name="keywords" content="web design studio, software engineering, hardware prototyping, skeleton scripts, boilerplate code, Arduino starter code, Raspberry Pi Python, FastAPI starter, CircuitPython, embedded systems, hobbyist code templates">
+<meta name="author" content="Echo Softworks">
+<meta name="robots" content="index, follow, max-image-preview:large">
+<link rel="canonical" href="https://www.echosoftworks.dev/">
+<meta name="theme-color" content="#000000">
+
+<!-- Open Graph / Facebook -->
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Echo Softworks">
+<meta property="og:url" content="https://www.echosoftworks.dev/">
+<meta property="og:title" content="Echo Softworks | Web, Software &amp; Hardware Studio + Free Skeleton Scripts">
+<meta property="og:description" content="A small studio building web design, custom software, and one-off hardware — plus a free, open library of skeleton scripts so hobbyists never face a blank page.">
+<meta property="og:image" content="https://www.echosoftworks.dev/assets/og-cover.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:locale" content="en_US">
+
+<!-- Twitter Card -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Echo Softworks | Web, Software &amp; Hardware Studio">
+<meta name="twitter:description" content="Free, open skeleton scripts for servos, motors, LEDs, APIs, WebSockets &amp; CLI tools — plus the paid work that funds them.">
+<meta name="twitter:image" content="https://www.echosoftworks.dev/assets/og-cover.png">
+
+<!-- Icons -->
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700;800&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+
+<!-- Structured data -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  "name": "Echo Softworks",
+  "url": "https://www.echosoftworks.dev/",
+  "description": "Small studio offering web design, software engineering, and hobby hardware builds, alongside a free open library of skeleton scripts for hobbyists.",
+  "sameAs": [
+    "https://www.buymeacoffee.com/echosw"
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  "name": "Echo Softworks",
+  "url": "https://www.echosoftworks.dev/"
+}
+</script>
 <style>
   :root{
-    --bg: #0B0F0E;
-    --panel: #101715;
-    --panel-2: #141d1a;
-    --line: rgba(124,255,178,0.14);
-    --line-dim: rgba(233,239,234,0.08);
-    --fg: #E9EFEA;
-    --fg-dim: #8CA39A;
-    --green: #7CFFB2;
-    --green-dim: rgba(124,255,178,0.12);
+    --bg: #000000;
+    --panel: #030403;
+    --panel-2: #050805;
+    --line: rgba(111,204,62,0.2);
+    --line-dim: rgba(220,230,222,0.06);
+    --fg: #E2E8E2;
+    --fg-dim: #66796E;
+    --green: #6FCC3E;
+    --green-bright: #93E869;
+    --green-dim: rgba(111,204,62,0.14);
     --amber: #FFB454;
     --amber-dim: rgba(255,180,84,0.14);
     --radius: 10px;
   }
   *{box-sizing:border-box;}
-  html{scroll-behavior:smooth;}
+  html{scroll-behavior:smooth; background:var(--bg);}
   body{
     margin:0;
     background:var(--bg);
@@ -36,11 +90,18 @@
   a{color:inherit;}
   .wrap{ max-width:1120px; margin:0 auto; padding:0 28px; }
   :focus-visible{ outline:2px solid var(--green); outline-offset:3px; }
+  .skip-link{
+    position:absolute; left:12px; top:-48px; z-index:100;
+    background:var(--green); color:#040A03; padding:10px 16px;
+    border-radius:6px; font-family:'JetBrains Mono', monospace; font-size:0.85rem;
+    text-decoration:none; transition:top 0.15s ease;
+  }
+  .skip-link:focus{ top:12px; }
 
   header.site{
     position:sticky; top:0; z-index:50;
-    background:rgba(11,15,14,0.86);
-    backdrop-filter:blur(10px);
+    background:rgba(0,0,0,0.97);
+    backdrop-filter:blur(6px);
     border-bottom:1px solid var(--line-dim);
   }
   nav{ display:flex; align-items:center; justify-content:space-between; padding:16px 28px; max-width:1120px; margin:0 auto; }
@@ -71,7 +132,7 @@
   .btn{ display:inline-flex; align-items:center; gap:8px; padding:13px 22px; border-radius:8px; font-family:'JetBrains Mono', monospace; font-size:0.92rem; font-weight:500; text-decoration:none; border:1px solid transparent; cursor:pointer; transition:transform 0.12s ease, border-color 0.12s ease, background 0.12s ease; }
   .btn:hover{transform:translateY(-1px);}
   .btn-primary{background:var(--green); color:#06110A;}
-  .btn-primary:hover{background:#93ffc0;}
+  .btn-primary:hover{background:var(--green-bright);}
   .btn-ghost{border-color:var(--line); color:var(--fg);}
   .btn-ghost:hover{border-color:var(--green); color:var(--green);}
 
@@ -114,13 +175,13 @@
     background:transparent; border:1px solid var(--line-dim); border-bottom:none;
     color:var(--fg-dim); cursor:pointer;
   }
-  .lang-tab.active{ color:var(--green); border-color:var(--line); background:#0B100E; }
+  .lang-tab.active{ color:var(--green); border-color:var(--line); background:#000000; }
 
   pre{ margin:0; padding:0 24px 22px; overflow-x:auto; }
-  code{ font-family:'JetBrains Mono', monospace; font-size:0.8rem; color:#c9e8d6; white-space:pre; }
+  code{ font-family:'JetBrains Mono', monospace; font-size:0.8rem; color:#A9CB93; white-space:pre; }
   .code-panel{ display:none; }
   .code-panel.active{ display:block; }
-  .code-inner{ background:#0B100E; border-top:1px solid var(--line-dim); padding-top:18px; }
+  .code-inner{ background:#000000; border-top:1px solid var(--line-dim); padding-top:18px; }
   .script-footer{ display:flex; align-items:center; justify-content:space-between; padding:14px 24px; border-top:1px solid var(--line-dim); flex-wrap:wrap; gap:10px; }
   .btn-small-coffee{ font-family:'JetBrains Mono', monospace; font-size:0.8rem; color:var(--amber); text-decoration:none; padding:7px 14px; border-radius:999px; background:var(--amber-dim); border:1px solid rgba(255,180,84,0.3); }
 
@@ -141,6 +202,8 @@
 </head>
 <body>
 
+<a class="skip-link" href="#top">Skip to content</a>
+
 <header class="site">
   <nav>
     <a href="#top" class="logo"><span class="e">Echo</span>&nbsp;Softworks</a>
@@ -157,7 +220,7 @@
 
 <main id="top">
   <section class="hero">
-    <canvas id="wave"></canvas>
+    <canvas id="wave" aria-hidden="true"></canvas>
     <div class="wrap hero-inner">
       <div class="eyebrow"><span class="dot">●</span> Web design · Software engineering · Hobby builds</div>
       <h1 class="headline">Read the signal.<span class="line2">Write the code.</span></h1>
@@ -956,7 +1019,7 @@ function transform(value) {
   function frame(t){
     ctx.clearRect(0,0,w,h);
     const phase = t * 0.0009;
-    drawWave(phase, 46, 'rgba(124,255,178,0.55)', 2);
+    drawWave(phase, 46, 'rgba(111,204,62,0.65)', 2);
     drawWave(phase + 0.6, 46, 'rgba(255,180,84,0.4)', 2);
     if(!reduceMotion){
       requestAnimationFrame(frame);

@@ -1,0 +1,1002 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Echo Softworks — Web &amp; Software, Built From Scratch</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700;800&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg: #0B0F0E;
+    --panel: #101715;
+    --panel-2: #141d1a;
+    --line: rgba(124,255,178,0.14);
+    --line-dim: rgba(233,239,234,0.08);
+    --fg: #E9EFEA;
+    --fg-dim: #8CA39A;
+    --green: #7CFFB2;
+    --green-dim: rgba(124,255,178,0.12);
+    --amber: #FFB454;
+    --amber-dim: rgba(255,180,84,0.14);
+    --radius: 10px;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    background:var(--bg);
+    color:var(--fg);
+    font-family:'IBM Plex Sans', sans-serif;
+    line-height:1.55;
+    -webkit-font-smoothing:antialiased;
+  }
+  h1,h2,h3,.mono{ font-family:'JetBrains Mono', monospace; }
+  a{color:inherit;}
+  .wrap{ max-width:1120px; margin:0 auto; padding:0 28px; }
+  :focus-visible{ outline:2px solid var(--green); outline-offset:3px; }
+
+  header.site{
+    position:sticky; top:0; z-index:50;
+    background:rgba(11,15,14,0.86);
+    backdrop-filter:blur(10px);
+    border-bottom:1px solid var(--line-dim);
+  }
+  nav{ display:flex; align-items:center; justify-content:space-between; padding:16px 28px; max-width:1120px; margin:0 auto; }
+  .logo{ display:flex; align-items:baseline; gap:2px; font-weight:800; font-size:1.15rem; letter-spacing:0.01em; text-decoration:none; }
+  .logo .e{color:var(--green);}
+  nav ul{ display:flex; gap:28px; list-style:none; margin:0; padding:0; }
+  nav ul li a{ text-decoration:none; color:var(--fg-dim); font-size:0.92rem; font-family:'JetBrains Mono', monospace; transition:color 0.15s ease; }
+  nav ul li a:hover{color:var(--green);}
+  .nav-links-wrap{display:flex; align-items:center; gap:32px;}
+  .btn-coffee-nav{
+    display:none; padding:8px 16px; border-radius:999px;
+    background:var(--amber-dim); color:var(--amber);
+    border:1px solid rgba(255,180,84,0.35);
+    font-family:'JetBrains Mono', monospace; font-size:0.82rem;
+    text-decoration:none; white-space:nowrap;
+  }
+  @media(min-width:640px){ .btn-coffee-nav{display:inline-block;} }
+
+  .hero{ position:relative; padding:96px 0 64px; overflow:hidden; border-bottom:1px solid var(--line-dim); }
+  .hero canvas{ position:absolute; inset:0; width:100%; height:100%; opacity:0.55; }
+  .hero-inner{position:relative; z-index:2;}
+  .eyebrow{ font-family:'JetBrains Mono', monospace; color:var(--fg-dim); font-size:0.85rem; letter-spacing:0.08em; text-transform:uppercase; margin-bottom:18px; }
+  .eyebrow .dot{color:var(--green);}
+  h1.headline{ font-size:clamp(2.2rem, 5.5vw, 3.6rem); line-height:1.08; margin:0 0 22px; font-weight:800; max-width:15ch; }
+  h1.headline .line2{color:var(--fg-dim); display:block;}
+  .hero p.sub{ max-width:52ch; font-size:1.08rem; color:var(--fg-dim); margin:0 0 34px; }
+  .hero-ctas{display:flex; gap:14px; flex-wrap:wrap;}
+  .btn{ display:inline-flex; align-items:center; gap:8px; padding:13px 22px; border-radius:8px; font-family:'JetBrains Mono', monospace; font-size:0.92rem; font-weight:500; text-decoration:none; border:1px solid transparent; cursor:pointer; transition:transform 0.12s ease, border-color 0.12s ease, background 0.12s ease; }
+  .btn:hover{transform:translateY(-1px);}
+  .btn-primary{background:var(--green); color:#06110A;}
+  .btn-primary:hover{background:#93ffc0;}
+  .btn-ghost{border-color:var(--line); color:var(--fg);}
+  .btn-ghost:hover{border-color:var(--green); color:var(--green);}
+
+  section{padding:80px 0;}
+  .section-head{margin-bottom:44px; max-width:60ch;}
+  .section-tag{ font-family:'JetBrains Mono', monospace; color:var(--green); font-size:0.82rem; letter-spacing:0.08em; text-transform:uppercase; margin-bottom:10px; }
+  h2{font-size:clamp(1.5rem,3vw,2rem); margin:0 0 14px; font-weight:700;}
+  .section-head p{color:var(--fg-dim); margin:0; font-size:1.02rem;}
+
+  .grid3{ display:grid; grid-template-columns:repeat(auto-fit,minmax(260px,1fr)); gap:20px; }
+  .card{ background:var(--panel); border:1px solid var(--line-dim); border-radius:var(--radius); padding:26px 24px; transition:border-color 0.15s ease, transform 0.15s ease; }
+  .card:hover{border-color:var(--line); transform:translateY(-2px);}
+  .card h3{font-size:1.05rem; margin:0 0 10px; font-weight:600;}
+  .card p{color:var(--fg-dim); font-size:0.94rem; margin:0;}
+  .card .tag{ display:inline-block; font-family:'JetBrains Mono',monospace; font-size:0.72rem; color:var(--green); background:var(--green-dim); padding:3px 9px; border-radius:5px; margin-bottom:12px; }
+
+  .script-filter{ display:flex; gap:8px; flex-wrap:wrap; margin-bottom:28px; }
+  .filter-btn{
+    font-family:'JetBrains Mono', monospace; font-size:0.8rem;
+    padding:7px 14px; border-radius:999px; cursor:pointer;
+    border:1px solid var(--line-dim); background:transparent; color:var(--fg-dim);
+  }
+  .filter-btn.active{ border-color:var(--green); color:var(--green); background:var(--green-dim); }
+
+  .script-card{ background:var(--panel); border:1px solid var(--line-dim); border-radius:var(--radius); margin-bottom:20px; overflow:hidden; }
+  .script-head{ display:flex; align-items:flex-start; justify-content:space-between; gap:16px; flex-wrap:wrap; padding:22px 24px; border-bottom:1px solid var(--line-dim); }
+  .script-head h3{margin:0 0 4px; font-size:1.08rem; font-weight:600;}
+  .script-head p{margin:0; color:var(--fg-dim); font-size:0.9rem;}
+  .script-meta{ display:flex; gap:8px; flex-wrap:wrap; margin-top:10px; }
+  .pill{ font-family:'JetBrains Mono', monospace; font-size:0.72rem; color:var(--fg-dim); border:1px solid var(--line-dim); padding:3px 9px; border-radius:999px; }
+  summary{ cursor:pointer; list-style:none; padding:14px 24px; font-family:'JetBrains Mono', monospace; font-size:0.85rem; color:var(--green); display:flex; align-items:center; gap:8px; user-select:none; }
+  summary::-webkit-details-marker{display:none;}
+  summary::before{ content:"▸"; display:inline-block; transition:transform 0.15s ease; }
+  details[open] summary::before{transform:rotate(90deg);}
+
+  .lang-tabs{ display:flex; gap:6px; padding:0 24px; flex-wrap:wrap; }
+  .lang-tab{
+    font-family:'JetBrains Mono', monospace; font-size:0.78rem;
+    padding:7px 14px; border-radius:6px 6px 0 0;
+    background:transparent; border:1px solid var(--line-dim); border-bottom:none;
+    color:var(--fg-dim); cursor:pointer;
+  }
+  .lang-tab.active{ color:var(--green); border-color:var(--line); background:#0B100E; }
+
+  pre{ margin:0; padding:0 24px 22px; overflow-x:auto; }
+  code{ font-family:'JetBrains Mono', monospace; font-size:0.8rem; color:#c9e8d6; white-space:pre; }
+  .code-panel{ display:none; }
+  .code-panel.active{ display:block; }
+  .code-inner{ background:#0B100E; border-top:1px solid var(--line-dim); padding-top:18px; }
+  .script-footer{ display:flex; align-items:center; justify-content:space-between; padding:14px 24px; border-top:1px solid var(--line-dim); flex-wrap:wrap; gap:10px; }
+  .btn-small-coffee{ font-family:'JetBrains Mono', monospace; font-size:0.8rem; color:var(--amber); text-decoration:none; padding:7px 14px; border-radius:999px; background:var(--amber-dim); border:1px solid rgba(255,180,84,0.3); }
+
+  .support-band{ background:var(--panel-2); border:1px solid var(--line-dim); border-radius:14px; padding:44px 36px; text-align:center; }
+  .support-band h2{margin-bottom:10px;}
+  .support-band p{color:var(--fg-dim); max-width:52ch; margin:0 auto 26px;}
+
+  .about-body{ max-width:70ch; color:var(--fg-dim); font-size:1.02rem; }
+  .about-body p{margin:0 0 16px;}
+
+  footer{ border-top:1px solid var(--line-dim); padding:36px 0; color:var(--fg-dim); font-family:'JetBrains Mono', monospace; font-size:0.82rem; }
+  footer .wrap{ display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px; }
+  footer a{text-decoration:none; color:var(--fg-dim);}
+  footer a:hover{color:var(--green);}
+
+  @media (prefers-reduced-motion: reduce){ html{scroll-behavior:auto;} }
+</style>
+</head>
+<body>
+
+<header class="site">
+  <nav>
+    <a href="#top" class="logo"><span class="e">Echo</span>&nbsp;Softworks</a>
+    <div class="nav-links-wrap">
+      <ul>
+        <li><a href="#services">Work</a></li>
+        <li><a href="#scripts">Scripts</a></li>
+        <li><a href="#about">About</a></li>
+      </ul>
+      <a class="btn-coffee-nav" href="https://www.buymeacoffee.com/echosoftworks" target="_blank" rel="noopener">☕ Support</a>
+    </div>
+  </nav>
+</header>
+
+<main id="top">
+  <section class="hero">
+    <canvas id="wave"></canvas>
+    <div class="wrap hero-inner">
+      <div class="eyebrow"><span class="dot">●</span> Web design · Software engineering · Hobby builds</div>
+      <h1 class="headline">Read the signal.<span class="line2">Write the code.</span></h1>
+      <p class="sub">A small studio that builds things properly, and gives away the parts that shouldn't be gatekept — like the blank-page starting point for your next project.</p>
+      <div class="hero-ctas">
+        <a class="btn btn-primary" href="#scripts">Browse skeleton scripts</a>
+        <a class="btn btn-ghost" href="#services">See what we build</a>
+      </div>
+    </div>
+  </section>
+
+  <section id="services">
+    <div class="wrap">
+      <div class="section-head">
+        <div class="section-tag">What we do</div>
+        <h2>Paid work, three ways</h2>
+        <p>The projects that keep the lights on — and fund everything given away for free below.</p>
+      </div>
+      <div class="grid3">
+        <div class="card">
+          <span class="tag">Web</span>
+          <h3>Web Design</h3>
+          <p>Sites and web apps built clean and fast, no bloated frameworks unless the project actually needs one.</p>
+        </div>
+        <div class="card">
+          <span class="tag">Software</span>
+          <h3>Software Engineering</h3>
+          <p>Tools, automation, and custom applications — desktop, mobile, or embedded, scoped to what you actually need.</p>
+        </div>
+        <div class="card">
+          <span class="tag">Hardware</span>
+          <h3>Hobby Hookups</h3>
+          <p>One-off builds for makers: sensor rigs, controller integrations, weird little devices that don't exist yet.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="scripts">
+    <div class="wrap">
+      <div class="section-head">
+        <div class="section-tag">Free &amp; open</div>
+        <h2>Skeleton scripts</h2>
+        <p>The blank-page problem kills more hobby projects than any technical wall does. Pick a language where it matters — most of these ship in more than one. Free to take, no strings, no sign-up.</p>
+      </div>
+
+      <div class="script-filter" role="group" aria-label="Filter scripts by category">
+        <button class="filter-btn active" data-filter="all">All</button>
+        <button class="filter-btn" data-filter="hardware">Hardware</button>
+        <button class="filter-btn" data-filter="backend">Backend</button>
+        <button class="filter-btn" data-filter="web">Web</button>
+        <button class="filter-btn" data-filter="tooling">Tooling</button>
+      </div>
+
+      <!-- SERVO -->
+      <div class="script-card" data-category="hardware">
+        <div class="script-head">
+          <div>
+            <h3>Servo Sweep &amp; Position Control</h3>
+            <p>Get a servo moving predictably before you touch your real project.</p>
+            <div class="script-meta"><span class="pill">motor &amp; servo</span><span class="pill">embedded</span></div>
+          </div>
+        </div>
+        <details>
+          <summary>View skeleton script</summary>
+          <div class="lang-tabs">
+            <button class="lang-tab active" data-lang="cpp">Arduino C++</button>
+            <button class="lang-tab" data-lang="python">CircuitPython</button>
+          </div>
+          <div class="code-inner">
+            <pre class="code-panel active" data-lang="cpp"><code>#include &lt;Servo.h&gt;
+
+// ── CONFIG ────────────────────────────────
+const int SERVO_PIN   = 9;     // TODO: your PWM-capable pin
+const int MIN_ANGLE   = 0;
+const int MAX_ANGLE   = 180;
+const int STEP_DELAY  = 15;    // ms between steps
+
+Servo myServo;
+int angle = MIN_ANGLE;
+int direction = 1;
+
+void setup() {
+  myServo.attach(SERVO_PIN);
+  myServo.write(angle);
+}
+
+void loop() {
+  myServo.write(angle);
+  angle += direction;
+
+  if (angle >= MAX_ANGLE || angle <= MIN_ANGLE) {
+    direction *= -1;
+  }
+  delay(STEP_DELAY);
+
+  // TODO: replace the sweep with your real logic
+}
+
+void moveTo(int targetAngle) {
+  targetAngle = constrain(targetAngle, MIN_ANGLE, MAX_ANGLE);
+  myServo.write(targetAngle);
+}</code></pre>
+            <pre class="code-panel" data-lang="python"><code>import time
+import board
+import pwmio
+from adafruit_motor import servo
+
+# ── CONFIG ────────────────────────────────
+SERVO_PIN = board.D9      # TODO: your PWM-capable pin
+MIN_ANGLE = 0
+MAX_ANGLE = 180
+STEP_DELAY = 0.015
+
+pwm = pwmio.PWMOut(SERVO_PIN, duty_cycle=2 ** 15, frequency=50)
+my_servo = servo.Servo(pwm)
+
+angle = MIN_ANGLE
+direction = 1
+
+def move_to(target_angle):
+    target_angle = max(MIN_ANGLE, min(MAX_ANGLE, target_angle))
+    my_servo.angle = target_angle
+
+while True:
+    my_servo.angle = angle
+    angle += direction
+
+    if angle >= MAX_ANGLE or angle <= MIN_ANGLE:
+        direction *= -1
+
+    time.sleep(STEP_DELAY)
+
+    # TODO: replace the sweep with your real logic</code></pre>
+          </div>
+        </details>
+        <div class="script-footer">
+          <span class="pill">Starting point, not a final answer</span>
+          <a class="btn-small-coffee" href="https://www.buymeacoffee.com/echosoftworks" target="_blank" rel="noopener">☕ This one helped</a>
+        </div>
+      </div>
+
+      <!-- DC MOTOR -->
+      <div class="script-card" data-category="hardware">
+        <div class="script-head">
+          <div>
+            <h3>DC Motor — PWM Driver</h3>
+            <p>Direction and speed control through a standard H-bridge (L298N / TB6612-style).</p>
+            <div class="script-meta"><span class="pill">motor &amp; servo</span><span class="pill">embedded</span></div>
+          </div>
+        </div>
+        <details>
+          <summary>View skeleton script</summary>
+          <div class="lang-tabs">
+            <button class="lang-tab active" data-lang="cpp">Arduino C++</button>
+            <button class="lang-tab" data-lang="python">Raspberry Pi (Python)</button>
+          </div>
+          <div class="code-inner">
+            <pre class="code-panel active" data-lang="cpp"><code>// ── CONFIG ────────────────────────────────
+const int PIN_IN1 = 5;   // TODO: H-bridge input 1
+const int PIN_IN2 = 6;   // TODO: H-bridge input 2
+const int PIN_PWM = 9;   // TODO: enable / speed pin
+
+void setup() {
+  pinMode(PIN_IN1, OUTPUT);
+  pinMode(PIN_IN2, OUTPUT);
+  pinMode(PIN_PWM, OUTPUT);
+  stopMotor();
+}
+
+void loop() {
+  // TODO: replace this demo pattern with real control logic
+  forward(180);   delay(1500);
+  stopMotor();    delay(400);
+  backward(180);  delay(1500);
+  stopMotor();    delay(400);
+}
+
+void forward(int speed) {
+  digitalWrite(PIN_IN1, HIGH);
+  digitalWrite(PIN_IN2, LOW);
+  analogWrite(PIN_PWM, constrain(speed, 0, 255));
+}
+
+void backward(int speed) {
+  digitalWrite(PIN_IN1, LOW);
+  digitalWrite(PIN_IN2, HIGH);
+  analogWrite(PIN_PWM, constrain(speed, 0, 255));
+}
+
+void stopMotor() {
+  digitalWrite(PIN_IN1, LOW);
+  digitalWrite(PIN_IN2, LOW);
+  analogWrite(PIN_PWM, 0);
+}</code></pre>
+            <pre class="code-panel" data-lang="python"><code>import RPi.GPIO as GPIO
+import time
+
+# ── CONFIG ────────────────────────────────
+PIN_IN1 = 17
+PIN_IN2 = 27
+PIN_PWM = 18
+
+GPIO.setmode(GPIO.BCM)
+GPIO.setup(PIN_IN1, GPIO.OUT)
+GPIO.setup(PIN_IN2, GPIO.OUT)
+GPIO.setup(PIN_PWM, GPIO.OUT)
+pwm = GPIO.PWM(PIN_PWM, 1000)
+pwm.start(0)
+
+def forward(speed):
+    GPIO.output(PIN_IN1, GPIO.HIGH)
+    GPIO.output(PIN_IN2, GPIO.LOW)
+    pwm.ChangeDutyCycle(max(0, min(100, speed)))
+
+def backward(speed):
+    GPIO.output(PIN_IN1, GPIO.LOW)
+    GPIO.output(PIN_IN2, GPIO.HIGH)
+    pwm.ChangeDutyCycle(max(0, min(100, speed)))
+
+def stop_motor():
+    GPIO.output(PIN_IN1, GPIO.LOW)
+    GPIO.output(PIN_IN2, GPIO.LOW)
+    pwm.ChangeDutyCycle(0)
+
+try:
+    # TODO: replace this demo pattern with real control logic
+    while True:
+        forward(70);  time.sleep(1.5)
+        stop_motor(); time.sleep(0.4)
+        backward(70); time.sleep(1.5)
+        stop_motor(); time.sleep(0.4)
+except KeyboardInterrupt:
+    pwm.stop()
+    GPIO.cleanup()</code></pre>
+          </div>
+        </details>
+        <div class="script-footer">
+          <span class="pill">Starting point, not a final answer</span>
+          <a class="btn-small-coffee" href="https://www.buymeacoffee.com/echosoftworks" target="_blank" rel="noopener">☕ This one helped</a>
+        </div>
+      </div>
+
+      <!-- LED -->
+      <div class="script-card" data-category="hardware">
+        <div class="script-head">
+          <div>
+            <h3>Addressable LED Pattern</h3>
+            <p>A rotating rainbow across a NeoPixel/WS2812 strip — swap the pattern math for your own.</p>
+            <div class="script-meta"><span class="pill">lighting</span><span class="pill">embedded</span></div>
+          </div>
+        </div>
+        <details>
+          <summary>View skeleton script</summary>
+          <div class="lang-tabs">
+            <button class="lang-tab active" data-lang="cpp">Arduino C++ (FastLED)</button>
+            <button class="lang-tab" data-lang="python">CircuitPython</button>
+          </div>
+          <div class="code-inner">
+            <pre class="code-panel active" data-lang="cpp"><code>#include &lt;FastLED.h&gt;
+
+// ── CONFIG ────────────────────────────────
+#define LED_PIN     6      // TODO: your data pin
+#define NUM_LEDS    30
+#define BRIGHTNESS  80
+
+CRGB leds[NUM_LEDS];
+
+void setup() {
+  FastLED.addLeds&lt;WS2812B, LED_PIN, GRB&gt;(leds, NUM_LEDS);
+  FastLED.setBrightness(BRIGHTNESS);
+}
+
+void loop() {
+  // TODO: replace with your real pattern
+  static uint8_t hue = 0;
+  for (int i = 0; i < NUM_LEDS; i++) {
+    leds[i] = CHSV(hue + (i * 256 / NUM_LEDS), 255, 255);
+  }
+  FastLED.show();
+  hue++;
+  delay(20);
+}</code></pre>
+            <pre class="code-panel" data-lang="python"><code>import board
+import neopixel
+import time
+
+# ── CONFIG ────────────────────────────────
+LED_PIN = board.D6
+NUM_LEDS = 30
+BRIGHTNESS = 0.3
+
+pixels = neopixel.NeoPixel(LED_PIN, NUM_LEDS, brightness=BRIGHTNESS, auto_write=False)
+
+def wheel(pos):
+    if pos < 85:
+        return (255 - pos * 3, pos * 3, 0)
+    elif pos < 170:
+        pos -= 85
+        return (0, 255 - pos * 3, pos * 3)
+    else:
+        pos -= 170
+        return (pos * 3, 0, 255 - pos * 3)
+
+hue = 0
+while True:
+    # TODO: replace with your real pattern
+    for i in range(NUM_LEDS):
+        pixel_index = (i * 256 // NUM_LEDS) + hue
+        pixels[i] = wheel(pixel_index & 255)
+    pixels.show()
+    hue = (hue + 1) % 256
+    time.sleep(0.02)</code></pre>
+          </div>
+        </details>
+        <div class="script-footer">
+          <span class="pill">Starting point, not a final answer</span>
+          <a class="btn-small-coffee" href="https://www.buymeacoffee.com/echosoftworks" target="_blank" rel="noopener">☕ This one helped</a>
+        </div>
+      </div>
+
+      <!-- WEB APP -->
+      <div class="script-card" data-category="web">
+        <div class="script-head">
+          <div>
+            <h3>Web App Starter, No Build Step</h3>
+            <p>State, render, and event handling in one file — open it and go.</p>
+            <div class="script-meta"><span class="pill">web app</span><span class="pill">no build</span></div>
+          </div>
+        </div>
+        <details>
+          <summary>View skeleton script</summary>
+          <div class="lang-tabs">
+            <button class="lang-tab active" data-lang="js">Vanilla JS</button>
+            <button class="lang-tab" data-lang="python">Python (Flask)</button>
+          </div>
+          <div class="code-inner">
+            <pre class="code-panel active" data-lang="js"><code>&lt;!-- index.html — open directly in a browser, no server needed --&gt;
+&lt;div id="app"&gt;&lt;/div&gt;
+&lt;script&gt;
+// ── STATE ─────────────────────────────────
+const state = { items: [] };   // TODO: shape this to your data
+
+// ── RENDER ────────────────────────────────
+function render() {
+  const app = document.getElementById('app');
+  app.innerHTML = `
+    &lt;h1&gt;My App&lt;/h1&gt;
+    &lt;button data-action="add"&gt;Add item&lt;/button&gt;
+    &lt;ul&gt;
+      ${state.items.map((item, i) =&gt;
+        `&lt;li&gt;${item} &lt;button data-action="remove" data-index="${i}"&gt;x&lt;/button&gt;&lt;/li&gt;`
+      ).join('')}
+    &lt;/ul&gt;
+  `;
+}
+
+// ── EVENTS (delegated — survives re-renders) ─
+document.getElementById('app').addEventListener('click', (e) =&gt; {
+  const action = e.target.dataset.action;
+  if (action === 'add') {
+    state.items.push(`Item ${state.items.length + 1}`);
+    render();
+  }
+  if (action === 'remove') {
+    state.items.splice(Number(e.target.dataset.index), 1);
+    render();
+  }
+});
+
+render();
+&lt;/script&gt;</code></pre>
+            <pre class="code-panel" data-lang="python"><code>from flask import Flask, render_template_string, request, jsonify
+
+app = Flask(__name__)
+
+# ── STATE ─────────────────────────────────
+state = {"items": []}   # TODO: shape this to your data
+
+PAGE = """
+&lt;h1&gt;My App&lt;/h1&gt;
+&lt;button onclick="addItem()"&gt;Add item&lt;/button&gt;
+&lt;ul id="list"&gt;&lt;/ul&gt;
+&lt;script&gt;
+async function refresh() {
+  const res = await fetch('/items');
+  const data = await res.json();
+  document.getElementById('list').innerHTML =
+    data.items.map((item, i) =&gt; `&lt;li&gt;${item} &lt;button onclick="removeItem(${i})"&gt;x&lt;/button&gt;&lt;/li&gt;`).join('');
+}
+async function addItem() { await fetch('/items', { method: 'POST' }); refresh(); }
+async function removeItem(i) { await fetch(`/items/${i}`, { method: 'DELETE' }); refresh(); }
+refresh();
+&lt;/script&gt;
+"""
+
+@app.route("/")
+def index():
+    return render_template_string(PAGE)
+
+@app.route("/items", methods=["GET", "POST"])
+def items():
+    if request.method == "POST":
+        state["items"].append(f"Item {len(state['items']) + 1}")
+    return jsonify(state)
+
+@app.route("/items/&lt;int:i&gt;", methods=["DELETE"])
+def remove_item(i):
+    if 0 <= i < len(state["items"]):
+        state["items"].pop(i)
+    return jsonify(state)
+
+if __name__ == "__main__":
+    app.run(debug=True)</code></pre>
+          </div>
+        </details>
+        <div class="script-footer">
+          <span class="pill">Starting point, not a final answer</span>
+          <a class="btn-small-coffee" href="https://www.buymeacoffee.com/echosoftworks" target="_blank" rel="noopener">☕ This one helped</a>
+        </div>
+      </div>
+
+      <!-- REST API -->
+      <div class="script-card" data-category="backend">
+        <div class="script-head">
+          <div>
+            <h3>REST API Starter</h3>
+            <p>Basic CRUD endpoints wired up and ready to point at a real data store.</p>
+            <div class="script-meta"><span class="pill">backend</span><span class="pill">API</span></div>
+          </div>
+        </div>
+        <details>
+          <summary>View skeleton script</summary>
+          <div class="lang-tabs">
+            <button class="lang-tab active" data-lang="python">Python (FastAPI)</button>
+            <button class="lang-tab" data-lang="js">Node (Express)</button>
+          </div>
+          <div class="code-inner">
+            <pre class="code-panel active" data-lang="python"><code>from fastapi import FastAPI, HTTPException
+from pydantic import BaseModel
+
+app = FastAPI()
+
+# ── MODEL ─────────────────────────────────
+class Item(BaseModel):
+    name: str          # TODO: shape this to your data
+
+db: list[Item] = []
+
+@app.get("/items")
+def list_items():
+    return db
+
+@app.post("/items")
+def create_item(item: Item):
+    db.append(item)
+    return item
+
+@app.get("/items/{item_id}")
+def get_item(item_id: int):
+    if item_id >= len(db):
+        raise HTTPException(status_code=404, detail="Not found")
+    return db[item_id]
+
+@app.delete("/items/{item_id}")
+def delete_item(item_id: int):
+    if item_id >= len(db):
+        raise HTTPException(status_code=404, detail="Not found")
+    return db.pop(item_id)
+
+# Run with: uvicorn main:app --reload</code></pre>
+            <pre class="code-panel" data-lang="js"><code>const express = require('express');
+const app = express();
+app.use(express.json());
+
+// ── STATE ─────────────────────────────────
+let items = [];   // TODO: shape this to your data
+
+app.get('/items', (req, res) =&gt; {
+  res.json(items);
+});
+
+app.post('/items', (req, res) =&gt; {
+  const item = req.body;   // TODO: validate
+  items.push(item);
+  res.status(201).json(item);
+});
+
+app.get('/items/:id', (req, res) =&gt; {
+  const item = items[req.params.id];
+  if (!item) return res.status(404).json({ error: 'Not found' });
+  res.json(item);
+});
+
+app.delete('/items/:id', (req, res) =&gt; {
+  if (!items[req.params.id]) return res.status(404).json({ error: 'Not found' });
+  const [removed] = items.splice(req.params.id, 1);
+  res.json(removed);
+});
+
+app.listen(3000, () =&gt; console.log('Listening on :3000'));</code></pre>
+          </div>
+        </details>
+        <div class="script-footer">
+          <span class="pill">Starting point, not a final answer</span>
+          <a class="btn-small-coffee" href="https://www.buymeacoffee.com/echosoftworks" target="_blank" rel="noopener">☕ This one helped</a>
+        </div>
+      </div>
+
+      <!-- WEBSOCKET -->
+      <div class="script-card" data-category="backend">
+        <div class="script-head">
+          <div>
+            <h3>Realtime WebSocket Server</h3>
+            <p>Broadcasts every message to all connected clients — the base for chat, multiplayer, or live dashboards.</p>
+            <div class="script-meta"><span class="pill">backend</span><span class="pill">realtime</span></div>
+          </div>
+        </div>
+        <details>
+          <summary>View skeleton script</summary>
+          <div class="lang-tabs">
+            <button class="lang-tab active" data-lang="python">Python (websockets)</button>
+            <button class="lang-tab" data-lang="js">Node (ws)</button>
+          </div>
+          <div class="code-inner">
+            <pre class="code-panel active" data-lang="python"><code>import asyncio
+import websockets
+
+# ── STATE ─────────────────────────────────
+clients = set()
+
+async def handler(websocket):
+    clients.add(websocket)
+    try:
+        async for message in websocket:
+            # TODO: replace with your real message handling
+            for client in clients:
+                if client != websocket:
+                    await client.send(message)
+    finally:
+        clients.remove(websocket)
+
+async def main():
+    async with websockets.serve(handler, "0.0.0.0", 8765):
+        await asyncio.Future()
+
+if __name__ == "__main__":
+    asyncio.run(main())</code></pre>
+            <pre class="code-panel" data-lang="js"><code>const { WebSocketServer } = require('ws');
+const wss = new WebSocketServer({ port: 8765 });
+
+// ── STATE ─────────────────────────────────
+const clients = new Set();
+
+wss.on('connection', (ws) =&gt; {
+  clients.add(ws);
+
+  ws.on('message', (data) =&gt; {
+    // TODO: replace with your real message handling
+    for (const client of clients) {
+      if (client !== ws) client.send(data.toString());
+    }
+  });
+
+  ws.on('close', () =&gt; clients.delete(ws));
+});
+
+console.log('WebSocket server on :8765');</code></pre>
+          </div>
+        </details>
+        <div class="script-footer">
+          <span class="pill">Starting point, not a final answer</span>
+          <a class="btn-small-coffee" href="https://www.buymeacoffee.com/echosoftworks" target="_blank" rel="noopener">☕ This one helped</a>
+        </div>
+      </div>
+
+      <!-- FILE WATCHER -->
+      <div class="script-card" data-category="tooling">
+        <div class="script-head">
+          <div>
+            <h3>File Watcher &amp; Automation</h3>
+            <p>Watches a folder and fires your own logic on any create, edit, or delete.</p>
+            <div class="script-meta"><span class="pill">automation</span><span class="pill">tooling</span></div>
+          </div>
+        </div>
+        <details>
+          <summary>View skeleton script</summary>
+          <div class="lang-tabs">
+            <button class="lang-tab active" data-lang="python">Python</button>
+            <button class="lang-tab" data-lang="js">Node</button>
+          </div>
+          <div class="code-inner">
+            <pre class="code-panel active" data-lang="python"><code>import time
+import os
+
+# ── CONFIG ────────────────────────────────
+WATCH_DIR = "./watched"     # TODO: folder to watch
+POLL_SECONDS = 2
+
+def on_change(filename, event):
+    # TODO: replace with your real action
+    print(f"[{event}] {filename}")
+
+def watch():
+    os.makedirs(WATCH_DIR, exist_ok=True)
+    seen = {f: os.path.getmtime(os.path.join(WATCH_DIR, f))
+            for f in os.listdir(WATCH_DIR)}
+
+    while True:
+        time.sleep(POLL_SECONDS)
+        current = os.listdir(WATCH_DIR)
+
+        for f in current:
+            path = os.path.join(WATCH_DIR, f)
+            mtime = os.path.getmtime(path)
+            if f not in seen:
+                on_change(f, "created")
+            elif mtime != seen[f]:
+                on_change(f, "modified")
+            seen[f] = mtime
+
+        for f in list(seen):
+            if f not in current:
+                on_change(f, "deleted")
+                del seen[f]
+
+if __name__ == "__main__":
+    watch()</code></pre>
+            <pre class="code-panel" data-lang="js"><code>const fs = require('fs');
+const path = require('path');
+
+// ── CONFIG ────────────────────────────────
+const WATCH_DIR = './watched';   // TODO: folder to watch
+
+fs.mkdirSync(WATCH_DIR, { recursive: true });
+
+function onChange(filename, eventType) {
+  // TODO: replace with your real action
+  console.log(`[${eventType}] ${filename}`);
+}
+
+fs.watch(WATCH_DIR, (eventType, filename) =&gt; {
+  if (filename) onChange(filename, eventType);
+});
+
+console.log(`Watching ${path.resolve(WATCH_DIR)}...`);</code></pre>
+          </div>
+        </details>
+        <div class="script-footer">
+          <span class="pill">Starting point, not a final answer</span>
+          <a class="btn-small-coffee" href="https://www.buymeacoffee.com/echosoftworks" target="_blank" rel="noopener">☕ This one helped</a>
+        </div>
+      </div>
+
+      <!-- CLI TOOL -->
+      <div class="script-card" data-category="tooling">
+        <div class="script-head">
+          <div>
+            <h3>CLI Tool Starter</h3>
+            <p>Argument parsing, verbose flag, and file output already wired up.</p>
+            <div class="script-meta"><span class="pill">CLI</span><span class="pill">tooling</span></div>
+          </div>
+        </div>
+        <details>
+          <summary>View skeleton script</summary>
+          <div class="lang-tabs">
+            <button class="lang-tab active" data-lang="python">Python</button>
+            <button class="lang-tab" data-lang="js">Node</button>
+          </div>
+          <div class="code-inner">
+            <pre class="code-panel active" data-lang="python"><code>import argparse
+
+def main():
+    parser = argparse.ArgumentParser(description="TODO: describe your tool")
+    parser.add_argument("input", help="Input file or value")
+    parser.add_argument("-o", "--output", default=None, help="Output path")
+    parser.add_argument("-v", "--verbose", action="store_true")
+    args = parser.parse_args()
+
+    if args.verbose:
+        print(f"Processing: {args.input}")
+
+    result = process(args.input)   # TODO: your real logic
+
+    if args.output:
+        with open(args.output, "w") as f:
+            f.write(result)
+    else:
+        print(result)
+
+def process(value):
+    return value.upper()   # TODO: replace
+
+if __name__ == "__main__":
+    main()</code></pre>
+            <pre class="code-panel" data-lang="js"><code>#!/usr/bin/env node
+const args = process.argv.slice(2);
+
+// ── PARSE ─────────────────────────────────
+const input = args[0];
+const verbose = args.includes('-v') || args.includes('--verbose');
+const outIndex = args.findIndex(a =&gt; a === '-o' || a === '--output');
+const output = outIndex !== -1 ? args[outIndex + 1] : null;
+
+if (!input) {
+  console.error('Usage: mytool &lt;input&gt; [-o output] [-v]');
+  process.exit(1);
+}
+
+if (verbose) console.error(`Processing: ${input}`);
+
+const result = transform(input);   // TODO: your real logic
+
+if (output) {
+  require('fs').writeFileSync(output, result);
+} else {
+  console.log(result);
+}
+
+function transform(value) {
+  return value.toUpperCase();   // TODO: replace
+}</code></pre>
+          </div>
+        </details>
+        <div class="script-footer">
+          <span class="pill">Starting point, not a final answer</span>
+          <a class="btn-small-coffee" href="https://www.buymeacoffee.com/echosoftworks" target="_blank" rel="noopener">☕ This one helped</a>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <section id="support">
+    <div class="wrap">
+      <div class="support-band">
+        <h2>Free to take. Coffee optional.</h2>
+        <p>Every script above stays free, forever, no account required. If one saved you a weekend of staring at a blank file, a coffee goes a long way toward the next one.</p>
+        <a class="btn btn-primary" href="https://www.buymeacoffee.com/echosoftworks" target="_blank" rel="noopener">☕ Buy us a coffee</a>
+      </div>
+    </div>
+  </section>
+
+  <section id="about">
+    <div class="wrap">
+      <div class="section-head">
+        <div class="section-tag">Who we are</div>
+        <h2>Built from scratch, on purpose</h2>
+      </div>
+      <div class="about-body">
+        <p>Echo Softworks is a small studio doing web design, software engineering, and hobby hardware builds — the paid work that keeps the lights on.</p>
+        <p>The skeleton script library exists because the blank-page problem is real, and we've hit it enough times ourselves to know exactly where hobbyists get stuck. Every script here is something we'd have wanted on day one of a new project.</p>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <span>© 2026 Echo Softworks</span>
+    <a href="https://www.buymeacoffee.com/echosoftworks" target="_blank" rel="noopener">☕ Buy Me a Coffee</a>
+  </div>
+</footer>
+
+<script>
+(function(){
+  const canvas = document.getElementById('wave');
+  const ctx = canvas.getContext('2d');
+  const heroEl = canvas.closest('.hero');
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  let w, h, dpr;
+
+  function resize(){
+    dpr = window.devicePixelRatio || 1;
+    w = heroEl.clientWidth;
+    h = heroEl.clientHeight;
+    canvas.width = w * dpr;
+    canvas.height = h * dpr;
+    canvas.style.width = w + 'px';
+    canvas.style.height = h + 'px';
+    ctx.setTransform(dpr,0,0,dpr,0,0);
+  }
+
+  function drawWave(phase, amp, color, lineWidth){
+    ctx.beginPath();
+    const mid = h * 0.62;
+    for(let x=0; x<=w; x+=4){
+      const y = mid + Math.sin((x*0.012) + phase) * amp * Math.sin(x/w*Math.PI);
+      if(x===0) ctx.moveTo(x,y); else ctx.lineTo(x,y);
+    }
+    ctx.strokeStyle = color;
+    ctx.lineWidth = lineWidth;
+    ctx.stroke();
+  }
+
+  function frame(t){
+    ctx.clearRect(0,0,w,h);
+    const phase = t * 0.0009;
+    drawWave(phase, 46, 'rgba(124,255,178,0.55)', 2);
+    drawWave(phase + 0.6, 46, 'rgba(255,180,84,0.4)', 2);
+    if(!reduceMotion){
+      requestAnimationFrame(frame);
+    }
+  }
+
+  resize();
+  window.addEventListener('resize', resize);
+  requestAnimationFrame(frame);
+  if(reduceMotion){
+    setTimeout(()=>frame(1200), 50);
+  }
+})();
+
+// Language tab switching
+document.querySelectorAll('.script-card').forEach(card => {
+  const tabs = card.querySelectorAll('.lang-tab');
+  const panels = card.querySelectorAll('.code-panel');
+  tabs.forEach(tab => {
+    tab.addEventListener('click', () => {
+      tabs.forEach(t => t.classList.remove('active'));
+      panels.forEach(p => p.classList.remove('active'));
+      tab.classList.add('active');
+      card.querySelector(`.code-panel[data-lang="${tab.dataset.lang}"]`).classList.add('active');
+    });
+  });
+});
+
+// Category filter
+document.querySelectorAll('.filter-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    const filter = btn.dataset.filter;
+    document.querySelectorAll('.script-card').forEach(card => {
+      card.style.display = (filter === 'all' || card.dataset.category === filter) ? '' : 'none';
+    });
+  });
+});
+</script>
+
+</body>
+</html>

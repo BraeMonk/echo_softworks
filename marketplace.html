@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Marketplace | Buy &amp; Sell Build Assets — Echo Softworks</title>
+<meta name="description" content="A community marketplace for game dev assets, web templates, Raspberry Pi and embedded builds, and CAD/fabrication files. Buy finished work, or sell your own — Echo Softworks takes a 3–7% cut depending on category.">
+<meta name="robots" content="index, follow, max-image-preview:large">
+<link rel="canonical" href="https://echosoftwork.com/marketplace.html">
+<meta name="theme-color" content="#0B0F0E">
+
+<link rel="icon" href="favicon.ico" sizes="any">
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700;800&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "CollectionPage",
+  "name": "Echo Softworks Marketplace",
+  "url": "https://echosoftwork.com/marketplace.html",
+  "description": "Community marketplace for game dev assets, web templates, embedded/Pi builds, and CAD files.",
+  "isPartOf": { "@type": "WebSite", "name": "Echo Softworks", "url": "https://echosoftwork.com/" }
+}
+</script>
+
+<link rel="stylesheet" href="style.css">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="supabase-config.js"></script>
+</head>
+<body>
+
+<a class="skip-link" href="#top">Skip to content</a>
+
+<header class="site">
+  <nav>
+    <a href="index.html" class="logo"><span class="e">Echo</span>&nbsp;Softworks</a>
+    <div class="nav-links-wrap">
+      <ul>
+        <li><a href="index.html#services">Work</a></li>
+        <li><a href="scripts.html">Scripts</a></li>
+        <li><a href="marketplace.html">Marketplace</a></li>
+        <li><a href="index.html#about">About</a></li>
+      </ul>
+      <span class="pill" id="auth-status" style="cursor:pointer;">Sign in</span>
+      <a class="btn-coffee-nav" href="https://www.buymeacoffee.com/echosw" target="_blank" rel="noopener">☕ Support</a>
+    </div>
+  </nav>
+</header>
+
+<main id="top">
+  <section id="marketplace">
+    <div class="wrap">
+      <div class="section-head">
+        <div class="section-tag">Community</div>
+        <h2>Marketplace</h2>
+        <p>Finished builds and assets, made and sold by the community — game systems, web templates, embedded/Pi projects, and CAD files. Buy what saves you time, or <a href="sell.html" style="color:var(--green); text-decoration:underline;">list your own work</a>.</p>
+      </div>
+
+      <div class="fee-note">
+        Echo Softworks takes a platform fee of <strong>4–7%</strong> per sale depending on category (shown on every listing) — the rest goes straight to the maker. Payouts run through Stripe Connect.
+      </div>
+
+      <div class="market-toolbar">
+        <div class="market-search">
+          <span aria-hidden="true">🔍</span>
+          <input type="text" id="search" placeholder="Search listings, tags, tools…" autocomplete="off">
+        </div>
+        <select id="sort" class="market-sort" aria-label="Sort listings">
+          <option value="newest">Newest</option>
+          <option value="price-asc">Price: low to high</option>
+          <option value="price-desc">Price: high to low</option>
+        </select>
+      </div>
+
+      <div class="script-filter" role="group" aria-label="Filter listings by category" id="category-filter">
+        <button class="filter-btn active" data-filter="all">All</button>
+        <button class="filter-btn" data-filter="game">Game Dev</button>
+        <button class="filter-btn" data-filter="web">Web</button>
+        <button class="filter-btn" data-filter="hardware">Hardware / Pi</button>
+        <button class="filter-btn" data-filter="cad">CAD</button>
+        <button class="filter-btn" data-filter="code">Code &amp; Scripts</button>
+      </div>
+
+      <div id="listing-grid" class="listing-grid" aria-live="polite"></div>
+      <div id="empty-state" class="empty-state" style="display:none;">No listings match that search. Try a different term or category.</div>
+    </div>
+  </section>
+</main>
+
+<!-- Listing detail / checkout modal -->
+<div class="modal-backdrop" id="modal-backdrop">
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+    <div class="modal-head">
+      <div>
+        <h3 id="modal-title"></h3>
+        <span class="pill" id="modal-cat-pill"></span>
+      </div>
+      <button class="modal-close" id="modal-close" aria-label="Close">✕</button>
+    </div>
+    <div class="modal-body">
+      <p id="modal-desc"></p>
+      <dl>
+        <dt>Seller</dt><dd id="modal-seller"></dd>
+        <dt>License</dt><dd id="modal-license"></dd>
+        <dt>Files</dt><dd id="modal-files"></dd>
+        <dt>Updated</dt><dd id="modal-updated"></dd>
+      </dl>
+      <div class="modal-fee-breakdown">
+        <div class="row"><span>Listing price</span><span id="fee-price"></span></div>
+        <div class="row"><span id="fee-label">Platform fee</span><span id="fee-amount"></span></div>
+        <div class="row total"><span>You pay</span><span id="fee-total"></span></div>
+      </div>
+      <p class="form-hint" style="margin-top:14px;">Buyer price is unaffected by the fee — the platform cut comes out of the seller's payout, not added on top. Breakdown shown here is for transparency.</p>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-primary" id="modal-buy">Buy — checkout with Stripe</button>
+      <button class="btn btn-ghost" id="modal-cancel">Not now</button>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <div class="wrap">
+    <span>© 2026 Echo Softworks</span>
+    <a href="https://www.buymeacoffee.com/echosw" target="_blank" rel="noopener">☕ Buy Me a Coffee</a>
+  </div>
+</footer>
+
+<script src="marketplace-data.js"></script>
+<script>
+(async function () {
+  const grid = document.getElementById('listing-grid');
+  const emptyState = document.getElementById('empty-state');
+  const searchInput = document.getElementById('search');
+  const sortSelect = document.getElementById('sort');
+  const authStatus = document.getElementById('auth-status');
+  let activeCategory = 'all';
+  let MARKET_LISTINGS = [];
+
+  // ── Auth (magic link — no password to manage) ──────────────
+  const { data: { session } } = await supabaseClient.auth.getSession();
+  updateAuthStatus(session);
+  supabaseClient.auth.onAuthStateChange((_event, s) => updateAuthStatus(s));
+
+  function updateAuthStatus(s) {
+    authStatus.textContent = s ? s.user.email : 'Sign in';
+  }
+
+  authStatus.addEventListener('click', async () => {
+    const { data: { session: s } } = await supabaseClient.auth.getSession();
+    if (s) {
+      await supabaseClient.auth.signOut();
+      return;
+    }
+    const email = prompt('Email for a magic sign-in link:');
+    if (!email) return;
+    const { error } = await supabaseClient.auth.signInWithOtp({ email });
+    alert(error ? 'Could not send link: ' + error.message : 'Check your email for a sign-in link.');
+  });
+
+  // ── Load listings from Supabase (falls back to sample data if the
+  //    project isn't configured yet, so this page still demos). ──
+  async function loadListings() {
+    if (!window.SUPABASE_URL || window.SUPABASE_URL.includes('YOUR-PROJECT')) {
+      MARKET_LISTINGS = SAMPLE_LISTINGS; // from marketplace-data.js
+      return;
+    }
+    const { data, error } = await supabaseClient
+      .from('listings')
+      .select('id, title, summary, description, category, tags, license_terms, price_cents, created_at, seller_id')
+      .eq('status', 'active')
+      .order('created_at', { ascending: false });
+
+    if (error || !data) {
+      console.error('Falling back to sample listings:', error);
+      MARKET_LISTINGS = SAMPLE_LISTINGS;
+      return;
+    }
+    MARKET_LISTINGS = data.map(l => ({
+      id: l.id,
+      title: l.title,
+      seller: 'seller', // resolved to a display name once profiles are added
+      category: l.category,
+      price: l.price_cents / 100,
+      tags: l.tags || [],
+      summary: l.summary,
+      description: l.description,
+      license: l.license_terms,
+      updated: l.created_at?.slice(0, 10) || '',
+      fileCount: null,
+    }));
+  }
+
+  function escapeHtml(str) {
+    return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  }
+
+  function money(n) {
+    return '$' + n.toFixed(2);
+  }
+
+  // Small inline icon set per category — no external image assets,
+  // consistent with the rest of the site's "build everything" ethos.
+  const ICONS = {
+    game: '<svg viewBox="0 0 48 48" fill="none" stroke="#7CFFB2" stroke-width="2"><rect x="6" y="16" width="36" height="18" rx="6"/><circle cx="17" cy="25" r="1.6" fill="#7CFFB2"/><circle cx="14" cy="28" r="1.6" fill="#7CFFB2"/><circle cx="20" cy="28" r="1.6" fill="#7CFFB2"/><circle cx="17" cy="31" r="1.6" fill="#7CFFB2"/><circle cx="33" cy="25" r="1.6" fill="#7CFFB2"/><circle cx="33" cy="31" r="1.6" fill="#7CFFB2"/></svg>',
+    web: '<svg viewBox="0 0 48 48" fill="none" stroke="#7CFFB2" stroke-width="2"><rect x="6" y="10" width="36" height="26" rx="3"/><line x1="6" y1="17" x2="42" y2="17"/><circle cx="11" cy="13.5" r="1" fill="#7CFFB2" stroke="none"/><circle cx="15" cy="13.5" r="1" fill="#7CFFB2" stroke="none"/></svg>',
+    hardware: '<svg viewBox="0 0 48 48" fill="none" stroke="#7CFFB2" stroke-width="2"><rect x="14" y="14" width="20" height="20" rx="2"/><line x1="20" y1="6" x2="20" y2="14"/><line x1="28" y1="6" x2="28" y2="14"/><line x1="20" y1="34" x2="20" y2="42"/><line x1="28" y1="34" x2="28" y2="42"/><line x1="6" y1="20" x2="14" y2="20"/><line x1="6" y1="28" x2="14" y2="28"/><line x1="34" y1="20" x2="42" y2="20"/><line x1="34" y1="28" x2="42" y2="28"/></svg>',
+    cad: '<svg viewBox="0 0 48 48" fill="none" stroke="#7CFFB2" stroke-width="2"><path d="M24 6 L42 16 V32 L24 42 L6 32 V16 Z"/><path d="M6 16 L24 26 L42 16"/><line x1="24" y1="26" x2="24" y2="42"/></svg>',
+    code: '<svg viewBox="0 0 48 48" fill="none" stroke="#7CFFB2" stroke-width="2"><polyline points="16,14 6,24 16,34"/><polyline points="32,14 42,24 32,34"/><line x1="27" y1="10" x2="21" y2="38"/></svg>',
+  };
+
+  function buildCard(listing) {
+    const fee = FEE_TABLE[listing.category];
+    const card = document.createElement('div');
+    card.className = 'listing-card';
+    card.dataset.category = listing.category;
+    card.dataset.id = listing.id;
+
+    card.innerHTML = `
+      <div class="listing-thumb">
+        <span class="cat-badge">${escapeHtml(fee.label)}</span>
+        ${ICONS[listing.category] || ''}
+      </div>
+      <div class="listing-body">
+        <h3>${escapeHtml(listing.title)}</h3>
+        <span class="seller">by ${escapeHtml(listing.seller)}</span>
+        <p class="desc">${escapeHtml(listing.summary)}</p>
+        <div class="listing-tags">${listing.tags.map(t => `<span class="pill">${escapeHtml(t)}</span>`).join('')}</div>
+        <div class="listing-meta-row">
+          <span class="listing-price">${money(listing.price)}</span>
+          <span class="pill">${Math.round(fee.rate * 100)}% fee</span>
+        </div>
+      </div>
+      <div class="listing-footer">
+        <button class="btn btn-primary" data-view="${listing.id}">View listing</button>
+      </div>
+    `;
+    return card;
+  }
+
+  function render() {
+    const q = searchInput.value.trim().toLowerCase();
+    const sort = sortSelect.value;
+
+    let items = MARKET_LISTINGS.filter(l => {
+      const matchesCat = activeCategory === 'all' || l.category === activeCategory;
+      const haystack = (l.title + ' ' + l.summary + ' ' + l.tags.join(' ') + ' ' + l.seller).toLowerCase();
+      const matchesQ = !q || haystack.includes(q);
+      return matchesCat && matchesQ;
+    });
+
+    if (sort === 'price-asc') items = items.slice().sort((a, b) => a.price - b.price);
+    else if (sort === 'price-desc') items = items.slice().sort((a, b) => b.price - a.price);
+    else items = items.slice().sort((a, b) => (a.updated < b.updated ? 1 : -1));
+
+    grid.innerHTML = '';
+    if (items.length === 0) {
+      emptyState.style.display = 'block';
+    } else {
+      emptyState.style.display = 'none';
+      items.forEach(l => grid.appendChild(buildCard(l)));
+    }
+  }
+
+  grid.addEventListener('click', (e) => {
+    const btn = e.target.closest('[data-view]');
+    if (!btn) return;
+    openModal(btn.dataset.view);
+  });
+
+  document.querySelectorAll('#category-filter .filter-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('#category-filter .filter-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      activeCategory = btn.dataset.filter;
+      render();
+    });
+  });
+  searchInput.addEventListener('input', render);
+  sortSelect.addEventListener('change', render);
+
+  // ── Modal / checkout ──────────────────────────────────
+  const backdrop = document.getElementById('modal-backdrop');
+  let currentListing = null;
+
+  function openModal(id) {
+    const listing = MARKET_LISTINGS.find(l => l.id === id);
+    if (!listing) return;
+    currentListing = listing;
+    const fee = FEE_TABLE[listing.category];
+    const feeAmount = listing.price * fee.rate;
+
+    document.getElementById('modal-title').textContent = listing.title;
+    document.getElementById('modal-cat-pill').textContent = fee.label;
+    document.getElementById('modal-desc').textContent = listing.description;
+    document.getElementById('modal-seller').textContent = listing.seller;
+    document.getElementById('modal-license').textContent = listing.license;
+    document.getElementById('modal-files').textContent = listing.fileCount + ' files';
+    document.getElementById('modal-updated').textContent = listing.updated;
+    document.getElementById('fee-price').textContent = money(listing.price);
+    document.getElementById('fee-label').textContent = `Platform fee (${Math.round(fee.rate * 100)}%, paid by seller)`;
+    document.getElementById('fee-amount').textContent = '−' + money(feeAmount);
+    document.getElementById('fee-total').textContent = money(listing.price);
+
+    backdrop.classList.add('open');
+  }
+
+  function closeModal() {
+    backdrop.classList.remove('open');
+    currentListing = null;
+  }
+
+  document.getElementById('modal-close').addEventListener('click', closeModal);
+  document.getElementById('modal-cancel').addEventListener('click', closeModal);
+  backdrop.addEventListener('click', (e) => { if (e.target === backdrop) closeModal(); });
+  document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeModal(); });
+
+  document.getElementById('modal-buy').addEventListener('click', async () => {
+    if (!currentListing) return;
+    const buyBtn = document.getElementById('modal-buy');
+
+    if (!window.SUPABASE_URL || window.SUPABASE_URL.includes('YOUR-PROJECT')) {
+      alert('Checkout isn\'t live yet — fill in supabase-config.js with your real project URL/keys and deploy the "checkout" Edge Function first (see /supabase/README.md).');
+      return;
+    }
+
+    const buyerEmail = prompt('Email for your receipt and download links:');
+    if (!buyerEmail) return;
+
+    buyBtn.disabled = true;
+    buyBtn.textContent = 'Redirecting…';
+    try {
+      const { data, error } = await supabaseClient.functions.invoke('checkout', {
+        body: { listingId: currentListing.id, buyerEmail },
+      });
+      if (error) throw error;
+      if (data?.url) window.location.href = data.url;
+      else throw new Error(data?.error || 'No checkout URL returned');
+    } catch (err) {
+      alert('Checkout failed: ' + (err.message || err));
+      buyBtn.disabled = false;
+      buyBtn.textContent = 'Buy — checkout with Stripe';
+    }
+  });
+
+  await loadListings();
+  render();
+})();
+</script>
+
+</body>
+</html>

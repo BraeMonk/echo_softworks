@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Sell on the Marketplace — Echo Softworks</title>
+<meta name="description" content="List your game dev assets, web templates, hardware/Pi builds, or CAD files for sale on the Echo Softworks marketplace. Set your price, keep the majority — platform fee is 4–7% depending on category.">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="https://echosoftwork.com/sell.html">
+<meta name="theme-color" content="#0B0F0E">
+
+<link rel="icon" href="favicon.ico" sizes="any">
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700;800&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="style.css">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="supabase-config.js"></script>
+</head>
+<body>
+
+<a class="skip-link" href="#top">Skip to content</a>
+
+<header class="site">
+  <nav>
+    <a href="index.html" class="logo"><span class="e">Echo</span>&nbsp;Softworks</a>
+    <div class="nav-links-wrap">
+      <ul>
+        <li><a href="index.html#services">Work</a></li>
+        <li><a href="scripts.html">Scripts</a></li>
+        <li><a href="marketplace.html">Marketplace</a></li>
+        <li><a href="index.html#about">About</a></li>
+      </ul>
+      <span class="pill" id="auth-status" style="cursor:pointer;">Sign in</span>
+      <a class="btn-coffee-nav" href="https://www.buymeacoffee.com/echosw" target="_blank" rel="noopener">☕ Support</a>
+    </div>
+  </nav>
+</header>
+
+<main id="top">
+  <section id="sell">
+    <div class="wrap">
+      <div class="section-head">
+        <div class="section-tag">Sell</div>
+        <h2>List something on the marketplace</h2>
+        <p>Set a price, upload your files, and pick a category. The platform fee is deducted from your payout automatically — buyers pay exactly the price you set, nothing tacked on.</p>
+      </div>
+
+      <div class="stripe-note">
+        <strong>Before your first sale:</strong> payouts run through Stripe Connect. You'll be prompted to complete a one-time Stripe onboarding (identity + bank details) after your first listing is submitted — Echo Softworks never touches your bank details directly.
+      </div>
+
+      <div class="stripe-note" id="signin-gate">
+        <strong>Sign in first:</strong> listings are tied to your account so buyers know who they're paying and you know what you've sold.
+        <span id="signin-trigger" style="color:var(--green); text-decoration:underline; cursor:pointer;">Sign in with a magic link →</span>
+      </div>
+
+      <table class="category-fee-table" aria-label="Platform fee by category">
+        <thead><tr><th>Category</th><th>Platform fee</th></tr></thead>
+        <tbody id="fee-table-body"></tbody>
+      </table>
+
+      <form class="sell-form" id="sell-form" style="margin-top:36px;">
+        <div class="form-row">
+          <label for="title">Title</label>
+          <input type="text" id="title" name="title" required maxlength="80" placeholder="e.g. Web-Swing Movement Controller">
+        </div>
+
+        <div class="form-row">
+          <label for="category">Category</label>
+          <select id="category" name="category" required></select>
+          <div class="form-hint">This determines your platform fee — see table above.</div>
+        </div>
+
+        <div class="form-row">
+          <label for="summary">Short summary</label>
+          <input type="text" id="summary" name="summary" required maxlength="140" placeholder="One sentence — shows on the listing card">
+        </div>
+
+        <div class="form-row">
+          <label for="description">Full description</label>
+          <textarea id="description" name="description" required placeholder="What it does, what's included, any setup steps a buyer needs to know."></textarea>
+        </div>
+
+        <div class="form-row">
+          <label for="tags">Tags</label>
+          <input type="text" id="tags" name="tags" placeholder="Comma-separated, e.g. Godot 4, GDScript, 3D">
+        </div>
+
+        <div class="form-row">
+          <label for="license">License terms</label>
+          <select id="license" name="license">
+            <option>Personal & commercial use, single project</option>
+            <option>Personal use only</option>
+            <option>Personal use; commercial license available on request</option>
+            <option>Unlimited projects, attribution required</option>
+          </select>
+        </div>
+
+        <div class="form-row">
+          <label for="price">Price (USD)</label>
+          <input type="number" id="price" name="price" required min="1" step="0.50" placeholder="12.00">
+        </div>
+
+        <div class="form-row">
+          <label>Files</label>
+          <div class="file-drop" id="file-drop" tabindex="0" role="button" aria-label="Add files">
+            Drop files here, or click to choose (zip, images, docs — up to 200MB total)
+          </div>
+          <input type="file" id="file-input" multiple style="display:none;">
+          <div class="file-list" id="file-list"></div>
+        </div>
+
+        <div class="fee-preview">
+          <h4>Payout preview</h4>
+          <div class="row"><span>Buyer pays</span><span id="preview-price">$0.00</span></div>
+          <div class="row"><span id="preview-fee-label">Platform fee</span><span id="preview-fee">−$0.00</span></div>
+          <div class="row total"><span>You receive</span><span id="preview-total">$0.00</span></div>
+        </div>
+
+        <div class="form-actions">
+          <button type="submit" class="btn btn-primary">Submit listing</button>
+          <span class="form-status" id="form-status"></span>
+        </div>
+      </form>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <span>© 2026 Echo Softworks</span>
+    <a href="https://www.buymeacoffee.com/echosw" target="_blank" rel="noopener">☕ Buy Me a Coffee</a>
+  </div>
+</footer>
+
+<script src="marketplace-data.js"></script>
+<script>
+(async function () {
+  const categorySelect = document.getElementById('category');
+  const feeTableBody = document.getElementById('fee-table-body');
+  const authStatus = document.getElementById('auth-status');
+  const signinGate = document.getElementById('signin-gate');
+  const signinTrigger = document.getElementById('signin-trigger');
+  const submitBtn = document.querySelector('#sell-form button[type="submit"]');
+
+  let currentUser = null;
+
+  async function refreshAuth() {
+    const { data: { session } } = await supabaseClient.auth.getSession();
+    currentUser = session?.user || null;
+    authStatus.textContent = currentUser ? currentUser.email : 'Sign in';
+    signinGate.style.display = currentUser ? 'none' : 'block';
+    submitBtn.disabled = !currentUser;
+  }
+
+  async function doSignIn() {
+    const email = prompt('Email for a magic sign-in link:');
+    if (!email) return;
+    const { error } = await supabaseClient.auth.signInWithOtp({ email });
+    alert(error ? 'Could not send link: ' + error.message : 'Check your email for a sign-in link, then come back to this page.');
+  }
+
+  authStatus.addEventListener('click', async () => {
+    if (currentUser) { await supabaseClient.auth.signOut(); await refreshAuth(); }
+    else doSignIn();
+  });
+  signinTrigger.addEventListener('click', doSignIn);
+  supabaseClient.auth.onAuthStateChange(refreshAuth);
+  await refreshAuth();
+
+  Object.entries(FEE_TABLE).forEach(([key, cfg]) => {
+    const opt = document.createElement('option');
+    opt.value = key;
+    opt.textContent = `${cfg.label} (${Math.round(cfg.rate * 100)}%)`;
+    categorySelect.appendChild(opt);
+
+    const row = document.createElement('tr');
+    row.innerHTML = `<td>${cfg.label}</td><td>${Math.round(cfg.rate * 100)}%</td>`;
+    feeTableBody.appendChild(row);
+  });
+
+  function money(n) { return '$' + n.toFixed(2); }
+
+  function updatePreview() {
+    const price = parseFloat(document.getElementById('price').value) || 0;
+    const cat = FEE_TABLE[categorySelect.value] || Object.values(FEE_TABLE)[0];
+    const fee = price * cat.rate;
+    document.getElementById('preview-price').textContent = money(price);
+    document.getElementById('preview-fee-label').textContent = `Platform fee (${Math.round(cat.rate * 100)}%)`;
+    document.getElementById('preview-fee').textContent = '−' + money(fee);
+    document.getElementById('preview-total').textContent = money(price - fee);
+  }
+
+  document.getElementById('price').addEventListener('input', updatePreview);
+  categorySelect.addEventListener('change', updatePreview);
+  updatePreview();
+
+  // ── File picker (client-side list only — actual upload happens
+  //    against the backend's presigned-upload endpoint once deployed) ──
+  const dropZone = document.getElementById('file-drop');
+  const fileInput = document.getElementById('file-input');
+  const fileListEl = document.getElementById('file-list');
+  let files = [];
+
+  function renderFiles() {
+    fileListEl.innerHTML = files.map((f, i) => `
+      <div class="file-item">
+        <span>${f.name} · ${(f.size / 1024).toFixed(0)} KB</span>
+        <button type="button" data-remove="${i}" aria-label="Remove ${f.name}">✕</button>
+      </div>
+    `).join('');
+  }
+
+  function addFiles(fileArray) {
+    files = files.concat(Array.from(fileArray));
+    renderFiles();
+  }
+
+  dropZone.addEventListener('click', () => fileInput.click());
+  dropZone.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') fileInput.click(); });
+  fileInput.addEventListener('change', (e) => addFiles(e.target.files));
+
+  ['dragover', 'dragenter'].forEach(evt =>
+    dropZone.addEventListener(evt, (e) => { e.preventDefault(); dropZone.classList.add('drag'); })
+  );
+  ['dragleave', 'drop'].forEach(evt =>
+    dropZone.addEventListener(evt, (e) => { e.preventDefault(); dropZone.classList.remove('drag'); })
+  );
+  dropZone.addEventListener('drop', (e) => addFiles(e.dataTransfer.files));
+
+  fileListEl.addEventListener('click', (e) => {
+    const btn = e.target.closest('[data-remove]');
+    if (!btn) return;
+    files.splice(Number(btn.dataset.remove), 1);
+    renderFiles();
+  });
+
+  // ── Submit: insert the listing row, upload files to Storage,
+  //    then send the seller to Stripe Connect onboarding if needed. ──
+  document.getElementById('sell-form').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const statusEl = document.getElementById('form-status');
+
+    if (!currentUser) {
+      statusEl.className = 'form-status err';
+      statusEl.textContent = 'Sign in first — see the box above.';
+      return;
+    }
+    if (!window.SUPABASE_URL || window.SUPABASE_URL.includes('YOUR-PROJECT')) {
+      statusEl.className = 'form-status err';
+      statusEl.textContent = 'Supabase isn\'t configured yet — fill in supabase-config.js (see /supabase/README.md). Form data is valid and ready to send once that\'s done.';
+      return;
+    }
+
+    statusEl.className = 'form-status';
+    statusEl.textContent = 'Submitting…';
+    submitBtn.disabled = true;
+
+    const priceCents = Math.round(parseFloat(document.getElementById('price').value) * 100);
+
+    try {
+      const { data: listing, error: listingErr } = await supabaseClient
+        .from('listings')
+        .insert({
+          seller_id: currentUser.id,
+          title: document.getElementById('title').value,
+          category: categorySelect.value,
+          summary: document.getElementById('summary').value,
+          description: document.getElementById('description').value,
+          tags: document.getElementById('tags').value.split(',').map(t => t.trim()).filter(Boolean),
+          license_terms: document.getElementById('license').value,
+          price_cents: priceCents,
+        })
+        .select('id')
+        .single();
+
+      if (listingErr) throw listingErr;
+
+      // Upload each file to Storage, then record it against the listing.
+      for (const f of files) {
+        const path = `${currentUser.id}/${listing.id}/${f.name}`;
+        const { error: uploadErr } = await supabaseClient.storage
+          .from('listing-files')
+          .upload(path, f, { upsert: false });
+        if (uploadErr) throw uploadErr;
+
+        const { error: fileRowErr } = await supabaseClient
+          .from('listing_files')
+          .insert({
+            listing_id: listing.id,
+            storage_path: path,
+            file_name: f.name,
+            size_bytes: f.size,
+          });
+        if (fileRowErr) throw fileRowErr;
+      }
+
+      statusEl.className = 'form-status ok';
+      statusEl.textContent = 'Listing submitted — it\'ll appear in the marketplace once reviewed.';
+
+      // First-time sellers need Stripe Connect onboarding before they can
+      // get paid. Check status, and if not onboarded, send them there.
+      const { data: acct } = await supabaseClient
+        .from('seller_accounts')
+        .select('payouts_enabled')
+        .eq('user_id', currentUser.id)
+        .maybeSingle();
+
+      if (!acct?.payouts_enabled) {
+        const { data: onboard, error: onboardErr } = await supabaseClient.functions.invoke('connect-onboard', {});
+        if (!onboardErr && onboard?.url) {
+          statusEl.textContent += ' One more step: complete Stripe payout setup — redirecting…';
+          setTimeout(() => { window.location.href = onboard.url; }, 1500);
+        }
+      }
+    } catch (err) {
+      statusEl.className = 'form-status err';
+      statusEl.textContent = 'Error: ' + (err.message || err);
+    } finally {
+      submitBtn.disabled = false;
+    }
+  });
+})();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,95 @@
+// Category definitions and platform fee rates.
+// This table is the single source of truth on the frontend for fee display;
+// the backend (see /backend) mirrors it and is the actual source of truth
+// for what Stripe charges — never trust a client-side number for money.
+const FEE_TABLE = {
+  game:     { label: 'Game Dev Assets',     rate: 0.06, icon: 'game' },
+  web:      { label: 'Web Templates',       rate: 0.05, icon: 'web' },
+  hardware: { label: 'Hardware / Pi Builds',rate: 0.04, icon: 'hardware' },
+  cad:      { label: 'CAD & Fabrication',   rate: 0.05, icon: 'cad' },
+  code:     { label: 'Code & Scripts',      rate: 0.07, icon: 'code' },
+};
+
+// Used only as a fallback so the page still demos before Supabase is
+// configured — once supabase-config.js has real values, marketplace.html
+// loads real listings from the `listings` table instead of this array.
+const SAMPLE_LISTINGS = [
+  {
+    id: 'godot-swing-controller',
+    title: 'Web-Swing Movement Controller',
+    seller: 'echo_softworks',
+    category: 'game',
+    price: 12.00,
+    tags: ['Godot 4', 'GDScript', '3D'],
+    summary: 'Grapple/swing physics controller with momentum conservation, tunable swing arcs, and bot-friendly hooks.',
+    description: 'A drop-in swing traversal controller built for Godot 4 multiplayer shooters. Includes momentum-conserving swing physics, tunable arc and release curves, anchor-point raycasting, and a bot-compatible interface so AI players can use the same movement code as humans. No external assets — pure GDScript.',
+    license: 'Personal & commercial use, single project',
+    updated: '2026-07-30',
+    fileCount: 6,
+  },
+  {
+    id: 'pi5-servo-hat-skeleton',
+    title: 'Raspberry Pi 5 Servo HAT Skeleton',
+    seller: 'echo_softworks',
+    category: 'hardware',
+    price: 8.00,
+    tags: ['Raspberry Pi 5', 'Python', 'sysfs PWM'],
+    summary: 'Hardware PWM servo control skeleton for Pi 5, no third-party servo libraries required.',
+    description: 'A full project skeleton for driving multiple servos from a Raspberry Pi 5 using hardware PWM via sysfs, bypassing the usual 32-bit-only servo libraries. Includes a calibration script, a simple gait/sequence player, and a clean abstraction layer for adding your own limb or gimbal logic.',
+    license: 'Personal & commercial use, single project',
+    updated: '2026-08-02',
+    fileCount: 9,
+  },
+  {
+    id: 'oscilloscope-hero-kit',
+    title: 'Oscilloscope Hero Section Kit',
+    seller: 'echo_softworks',
+    category: 'web',
+    price: 6.00,
+    tags: ['Canvas', 'Vanilla JS', 'No dependencies'],
+    summary: 'Dual-waveform animated canvas hero section, dependency-free and reduced-motion aware.',
+    description: 'A self-contained animated waveform hero for landing pages: dual sine-wave canvas rendering, DPR-aware resizing, and prefers-reduced-motion handling out of the box. No canvas libraries, no build step — copy the HTML/CSS/JS block into any page.',
+    license: 'Personal & commercial use, single project',
+    updated: '2026-06-14',
+    fileCount: 3,
+  },
+  {
+    id: 'wisp-leg-mount-kit',
+    title: 'Wisp Servo Leg Mount Kit (STL)',
+    seller: 'echo_softworks',
+    category: 'cad',
+    price: 15.00,
+    tags: ['STL', 'FDM print', 'Servo mount'],
+    summary: 'Printable leg bracket and hip-mount set sized for standard 9g/20kg servo footprints.',
+    description: 'A set of printable leg brackets and hip mounts designed around common hobby servo footprints, used in the Wisp robot build. Includes cable channel relief, snap-fit access panels, and a bill of materials for hardware (screws/bearings) not included in the print.',
+    license: 'Personal use; commercial fabrication license available on request',
+    updated: '2026-08-10',
+    fileCount: 5,
+  },
+  {
+    id: 'network-voice-relay',
+    title: 'WebSocket Mic/Voice Relay',
+    seller: 'echo_softworks',
+    category: 'code',
+    price: 10.00,
+    tags: ['Python', 'WebSocket', 'Audio'],
+    summary: 'Bidirectional audio relay skeleton for streaming mic input and synthesized voice over WebSocket.',
+    description: 'A WebSocket-based audio relay skeleton with a minimal browser frontend: streams microphone input to a server process and pushes synthesized voice audio back out to any connected client. Built for robot/assistant projects that need to move audio off-device without a heavyweight streaming stack.',
+    license: 'Personal & commercial use, single project',
+    updated: '2026-08-05',
+    fileCount: 4,
+  },
+  {
+    id: 'roblox-duel-terminal',
+    title: 'Bounty Duel Terminal System',
+    seller: 'echo_softworks',
+    category: 'game',
+    price: 9.00,
+    tags: ['Roblox', 'Luau', 'Game mode'],
+    summary: 'Standalone duel/bounty challenge terminal with matchmaking state machine, ready to wire into any map.',
+    description: 'A self-contained bounty/duel terminal system for Roblox: challenge issuing, accept/decline state machine, countdown and arena lock-in, and payout hooks. Ships as a single module with clear extension points for your own currency and stat systems.',
+    license: 'Personal & commercial use, single project',
+    updated: '2026-07-18',
+    fileCount: 7,
+  },
+];

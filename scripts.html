@@ -68,6 +68,7 @@
       <ul>
         <li><a href="index.html#services">Work</a></li>
         <li><a href="scripts.html">Scripts</a></li>
+        <li><a href="marketplace.html">Marketplace</a></li>
         <li><a href="index.html#about">About</a></li>
       </ul>
       <a class="btn-coffee-nav" href="https://www.buymeacoffee.com/echosw" target="_blank" rel="noopener">☕ Support</a>
@@ -81,7 +82,7 @@
       <div class="section-head">
         <div class="section-tag">Free &amp; open</div>
         <h2>Skeleton scripts</h2>
-        <p>The blank-page problem kills more hobby projects than any technical wall does. Pick a language where it matters — most of these ship in more than one. Free to take, no strings, no sign-up.</p>
+        <p>The blank-page problem kills more hobby projects than any technical wall does. Pick a language where it matters — most of these ship in more than one. Free to take, no strings, no sign-up. Looking for finished, sellable builds instead? Check the <a href="marketplace.html" style="color:var(--green); text-decoration:underline;">marketplace</a>.</p>
       </div>
 
       <div class="script-filter" role="group" aria-label="Filter scripts by category">
@@ -117,11 +118,6 @@
     return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
   }
 
-  // ── Build one card's head/tabs/footer eagerly (cheap, text-only).
-  //    The actual code strings are NOT put in the DOM here — each
-  //    <pre> stays empty until its <details> is opened for the first
-  //    time, so a page with 50 scripts still parses/paints like a
-  //    page with 5. See fillCodePanels() below.
   function buildCard(script) {
     const card = document.createElement('div');
     card.className = 'script-card';
@@ -163,13 +159,12 @@
       if (details.open && !filled) {
         script.langs.forEach(lang => {
           const codeEl = card.querySelector(`.code-panel[data-lang="${lang.id}"] code`);
-          codeEl.textContent = lang.code;   // textContent, not innerHTML — no escaping bugs, no injection risk
+          codeEl.textContent = lang.code;
         });
         filled = true;
       }
     });
 
-    // Language tab switching
     const tabs = card.querySelectorAll('.lang-tab');
     const panels = card.querySelectorAll('.code-panel');
     tabs.forEach(tab => {
@@ -186,7 +181,6 @@
 
   SCRIPTS_DATA.forEach(script => grid.appendChild(buildCard(script)));
 
-  // Category filter
   document.querySelectorAll('.filter-btn').forEach(btn => {
     btn.addEventListener('click', () => {
       document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));

@@ -71,6 +71,7 @@ h1.headline .line2{color:var(--fg-dim); display:block;}
 .btn-primary:hover{background:#93ffc0;}
 .btn-ghost{border-color:var(--line); color:var(--fg);}
 .btn-ghost:hover{border-color:var(--green); color:var(--green);}
+.btn:disabled{opacity:0.5; cursor:not-allowed; transform:none;}
 
 section{padding:80px 0;}
 .section-head{margin-bottom:44px; max-width:60ch;}
@@ -93,11 +94,6 @@ h2{font-size:clamp(1.5rem,3vw,2rem); margin:0 0 14px; font-weight:700;}
 }
 .filter-btn.active{ border-color:var(--green); color:var(--green); background:var(--green-dim); }
 
-/* ── Script grid ─────────────────────────────
-   Two columns of collapsed cards so the library scales without
-   turning into one long single-column scroll. A card that's been
-   opened (.details-open) spans both columns so code has room to
-   breathe; collapsed cards stay compact and side-by-side. */
 .script-grid{
   display:grid;
   grid-template-columns:repeat(auto-fit, minmax(min(420px, 100%), 1fr));
@@ -146,5 +142,154 @@ footer{ border-top:1px solid var(--line-dim); padding:36px 0; color:var(--fg-dim
 footer .wrap{ display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px; }
 footer a{text-decoration:none; color:var(--fg-dim);}
 footer a:hover{color:var(--green);}
+
+/* ── Marketplace ───────────────────────────── */
+.market-toolbar{
+  display:flex; gap:12px; flex-wrap:wrap; align-items:center;
+  justify-content:space-between; margin-bottom:22px;
+}
+.market-search{
+  flex:1 1 240px; display:flex; align-items:center; gap:8px;
+  background:var(--panel); border:1px solid var(--line-dim); border-radius:8px;
+  padding:10px 14px;
+}
+.market-search input{
+  background:transparent; border:none; outline:none; color:var(--fg);
+  font-family:'JetBrains Mono', monospace; font-size:0.85rem; width:100%;
+}
+.market-search input::placeholder{color:var(--fg-dim);}
+.market-sort{
+  background:var(--panel); border:1px solid var(--line-dim); border-radius:8px;
+  color:var(--fg-dim); font-family:'JetBrains Mono', monospace; font-size:0.82rem;
+  padding:10px 12px;
+}
+.fee-note{
+  font-family:'JetBrains Mono', monospace; font-size:0.78rem; color:var(--fg-dim);
+  border:1px dashed var(--line-dim); border-radius:8px; padding:12px 16px; margin-bottom:28px;
+}
+.fee-note strong{color:var(--green);}
+
+.listing-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit, minmax(260px,1fr));
+  gap:20px;
+}
+.listing-card{
+  background:var(--panel); border:1px solid var(--line-dim); border-radius:var(--radius);
+  overflow:hidden; display:flex; flex-direction:column;
+  transition:border-color 0.15s ease, transform 0.15s ease;
+}
+.listing-card:hover{border-color:var(--line); transform:translateY(-2px);}
+.listing-thumb{
+  aspect-ratio:16/10; display:flex; align-items:center; justify-content:center;
+  background:linear-gradient(160deg, #101715, #0B100E);
+  border-bottom:1px solid var(--line-dim); position:relative;
+}
+.listing-thumb svg{width:44%; height:44%; opacity:0.85;}
+.listing-thumb .cat-badge{
+  position:absolute; top:10px; left:10px;
+  font-family:'JetBrains Mono', monospace; font-size:0.68rem; letter-spacing:0.04em;
+  text-transform:uppercase; color:var(--green); background:rgba(11,16,14,0.85);
+  border:1px solid var(--line); padding:3px 9px; border-radius:999px;
+}
+.listing-body{ padding:18px 20px; flex:1; display:flex; flex-direction:column; gap:10px; }
+.listing-body h3{margin:0; font-size:1rem; font-weight:600;}
+.listing-body .seller{ font-family:'JetBrains Mono', monospace; font-size:0.76rem; color:var(--fg-dim); }
+.listing-body p.desc{ color:var(--fg-dim); font-size:0.87rem; margin:0; flex:1; }
+.listing-meta-row{ display:flex; align-items:center; justify-content:space-between; gap:10px; margin-top:4px; }
+.listing-price{ font-family:'JetBrains Mono', monospace; font-weight:700; color:var(--amber); font-size:1.05rem; }
+.listing-tags{ display:flex; gap:6px; flex-wrap:wrap; }
+.listing-footer{ padding:14px 20px; border-top:1px solid var(--line-dim); }
+.listing-footer .btn{ width:100%; justify-content:center; padding:10px; font-size:0.85rem; }
+
+.empty-state{
+  text-align:center; padding:60px 20px; color:var(--fg-dim);
+  border:1px dashed var(--line-dim); border-radius:var(--radius);
+  font-family:'JetBrains Mono', monospace; font-size:0.88rem;
+}
+
+/* Listing detail modal */
+.modal-backdrop{
+  position:fixed; inset:0; background:rgba(6,10,8,0.72); backdrop-filter:blur(3px);
+  display:none; align-items:flex-start; justify-content:center; z-index:200;
+  padding:40px 16px; overflow-y:auto;
+}
+.modal-backdrop.open{display:flex;}
+.modal{
+  background:var(--panel); border:1px solid var(--line); border-radius:14px;
+  max-width:640px; width:100%; padding:0; overflow:hidden;
+}
+.modal-head{ padding:22px 26px; border-bottom:1px solid var(--line-dim); display:flex; justify-content:space-between; gap:16px; align-items:flex-start; }
+.modal-head h3{margin:0 0 6px; font-size:1.2rem;}
+.modal-close{ background:none; border:none; color:var(--fg-dim); font-size:1.3rem; cursor:pointer; line-height:1; padding:4px; }
+.modal-close:hover{color:var(--green);}
+.modal-body{ padding:22px 26px; color:var(--fg-dim); font-size:0.94rem; }
+.modal-body dl{ display:grid; grid-template-columns:auto 1fr; gap:8px 18px; margin:18px 0 0; font-family:'JetBrains Mono', monospace; font-size:0.82rem; }
+.modal-body dt{color:var(--fg-dim);}
+.modal-body dd{margin:0; color:var(--fg);}
+.modal-fee-breakdown{
+  margin-top:18px; padding:14px 16px; background:#0B100E; border:1px solid var(--line-dim);
+  border-radius:8px; font-family:'JetBrains Mono', monospace; font-size:0.8rem;
+}
+.modal-fee-breakdown .row{ display:flex; justify-content:space-between; padding:3px 0; }
+.modal-fee-breakdown .row.total{ border-top:1px solid var(--line-dim); margin-top:6px; padding-top:8px; color:var(--green); font-weight:700; }
+.modal-footer{ padding:18px 26px; border-top:1px solid var(--line-dim); display:flex; gap:12px; flex-wrap:wrap; }
+
+/* Sell / listing form */
+.sell-form{ max-width:680px; }
+.form-row{ margin-bottom:20px; }
+.form-row label{ display:block; font-family:'JetBrains Mono', monospace; font-size:0.82rem; color:var(--fg-dim); margin-bottom:8px; }
+.form-row input[type="text"],
+.form-row input[type="number"],
+.form-row select,
+.form-row textarea{
+  width:100%; background:var(--panel); border:1px solid var(--line-dim); border-radius:8px;
+  color:var(--fg); font-family:'IBM Plex Sans', sans-serif; font-size:0.94rem; padding:12px 14px;
+  outline:none;
+}
+.form-row input:focus, .form-row select:focus, .form-row textarea:focus{ border-color:var(--green); }
+.form-row textarea{ min-height:120px; resize:vertical; }
+.form-hint{ color:var(--fg-dim); font-size:0.78rem; margin-top:6px; font-family:'JetBrains Mono', monospace; }
+.file-drop{
+  border:1px dashed var(--line-dim); border-radius:8px; padding:26px; text-align:center;
+  color:var(--fg-dim); font-family:'JetBrains Mono', monospace; font-size:0.85rem; cursor:pointer;
+  transition:border-color 0.15s ease;
+}
+.file-drop:hover, .file-drop.drag{ border-color:var(--green); color:var(--green); }
+.file-list{ margin-top:10px; display:flex; flex-direction:column; gap:6px; }
+.file-list .file-item{
+  display:flex; justify-content:space-between; align-items:center;
+  background:#0B100E; border:1px solid var(--line-dim); border-radius:6px;
+  padding:8px 12px; font-family:'JetBrains Mono', monospace; font-size:0.78rem; color:var(--fg-dim);
+}
+.file-item button{ background:none; border:none; color:var(--fg-dim); cursor:pointer; font-size:0.9rem; }
+.file-item button:hover{color:#ff8484;}
+
+.fee-preview{
+  background:var(--panel-2); border:1px solid var(--line-dim); border-radius:10px;
+  padding:20px 22px; margin-bottom:24px;
+}
+.fee-preview h4{ margin:0 0 12px; font-size:0.9rem; font-family:'JetBrains Mono', monospace; color:var(--green); }
+.fee-preview .row{ display:flex; justify-content:space-between; font-family:'JetBrains Mono', monospace; font-size:0.85rem; padding:4px 0; color:var(--fg-dim); }
+.fee-preview .row.total{ border-top:1px solid var(--line-dim); margin-top:8px; padding-top:10px; color:var(--fg); font-weight:600; }
+.fee-preview .row.total span:last-child{color:var(--green);}
+
+.category-fee-table{
+  width:100%; border-collapse:collapse; font-family:'JetBrains Mono', monospace; font-size:0.82rem; margin:18px 0 0;
+}
+.category-fee-table th, .category-fee-table td{ text-align:left; padding:10px 12px; border-bottom:1px solid var(--line-dim); color:var(--fg-dim); }
+.category-fee-table th{ color:var(--fg); font-weight:600; }
+.category-fee-table td:last-child, .category-fee-table th:last-child{ color:var(--green); text-align:right; }
+
+.form-actions{ display:flex; gap:14px; flex-wrap:wrap; align-items:center; margin-top:8px; }
+.form-status{ font-family:'JetBrains Mono', monospace; font-size:0.82rem; color:var(--fg-dim); }
+.form-status.ok{color:var(--green);}
+.form-status.err{color:#ff8484;}
+
+.stripe-note{
+  border:1px solid var(--line-dim); border-radius:10px; padding:16px 18px; margin-bottom:28px;
+  font-family:'JetBrains Mono', monospace; font-size:0.8rem; color:var(--fg-dim); background:var(--panel);
+}
+.stripe-note strong{color:var(--fg);}
 
 @media (prefers-reduced-motion: reduce){ html{scroll-behavior:auto;} }

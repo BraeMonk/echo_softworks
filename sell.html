@@ -167,7 +167,10 @@
   async function doSignIn() {
     const email = prompt('Email for a magic sign-in link:');
     if (!email) return;
-    const { error } = await supabaseClient.auth.signInWithOtp({ email });
+    const { error } = await supabaseClient.auth.signInWithOtp({
+      email,
+      options: { emailRedirectTo: window.location.href }
+    });
     alert(error ? 'Could not send link: ' + error.message : 'Check your email for a sign-in link, then come back to this page.');
   }
 

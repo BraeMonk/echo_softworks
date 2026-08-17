@@ -382,6 +382,9 @@ footer a:hover{color:var(--green);}
 .status-badge.pending{ color:var(--amber); background:var(--amber-dim); }
 .status-badge.refunded, .status-badge.failed{ color:#ff8484; border-color:rgba(255,132,132,0.3); }
 
+.btn-danger{ background:#D64545; color:#fff; border-color:#D64545; }
+.btn-danger:hover{ background:#c23a3a; border-color:#c23a3a; }
+
 .stripe-note{
   border:1px solid var(--line-dim); border-radius:10px; padding:16px 18px; margin-bottom:28px;
   font-family:'JetBrains Mono', monospace; font-size:0.8rem; color:var(--fg-dim); background:var(--panel);

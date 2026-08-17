@@ -64,16 +64,21 @@
 <header class="site">
   <nav>
     <a href="index.html" class="logo"><span class="e">Echo</span>&nbsp;Softworks</a>
-    <div class="nav-links-wrap">
+    <button class="burger" id="burgerBtn" aria-label="Open menu" aria-expanded="false" aria-controls="navLinksWrap">
+      <span></span><span></span><span></span>
+    </button>
+    <div class="nav-links-wrap" id="navLinksWrap">
       <ul>
         <li><a href="index.html#services">Work</a></li>
         <li><a href="scripts.html">Scripts</a></li>
         <li><a href="marketplace.html">Marketplace</a></li>
         <li><a href="index.html#about">About</a></li>
       </ul>
+      <a class="pill" href="marketplace.html">Sign in</a>
       <a class="btn-coffee-nav" href="https://www.buymeacoffee.com/echosw" target="_blank" rel="noopener">☕ Support</a>
     </div>
   </nav>
+  <div class="nav-scrim" id="navScrim"></div>
 </header>
 
 <main id="top">
@@ -110,6 +115,7 @@
 </footer>
 
 <script src="scripts-data.js"></script>
+<script src="nav.js"></script>
 <script>
 (function () {
   const grid = document.getElementById('script-grid');

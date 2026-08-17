@@ -339,6 +339,49 @@ footer a:hover{color:var(--green);}
 .form-status.ok{color:var(--green);}
 .form-status.err{color:#ff8484;}
 
+/* ── Account ───────────────────────────── */
+.account-gate{ color:var(--fg-dim); font-size:1rem; }
+.account-gate a{ color:var(--green); }
+
+.account-header{
+  display:flex; align-items:center; justify-content:space-between; gap:20px;
+  flex-wrap:wrap; margin-bottom:36px; padding-bottom:28px; border-bottom:1px solid var(--line-dim);
+}
+.account-header h2{ margin:0 0 6px; }
+.account-email{ font-family:'JetBrains Mono', monospace; color:var(--fg-dim); font-size:0.9rem; }
+.account-badge{ margin-left:10px; }
+.account-badge.ok{ color:var(--green); border-color:var(--line); }
+.account-badge.pending{ color:var(--amber); }
+
+.stat-grid{ display:grid; grid-template-columns:repeat(auto-fit,minmax(180px,1fr)); gap:16px; margin-bottom:40px; }
+.stat-card{ background:var(--panel); border:1px solid var(--line-dim); border-radius:var(--radius); padding:20px 22px; }
+.stat-card .stat-label{ font-family:'JetBrains Mono', monospace; font-size:0.76rem; color:var(--fg-dim); text-transform:uppercase; letter-spacing:0.05em; margin-bottom:8px; }
+.stat-card .stat-value{ font-size:1.6rem; font-weight:700; color:var(--fg); }
+.stat-card .stat-value.accent{ color:var(--green); }
+
+.account-section{ margin-bottom:44px; }
+.account-section h3{ font-size:1.1rem; margin:0 0 16px; }
+.account-section .empty-hint{ color:var(--fg-dim); font-size:0.9rem; }
+
+.account-table{ width:100%; border-collapse:collapse; }
+.account-table th, .account-table td{ text-align:left; padding:12px 14px; border-bottom:1px solid var(--line-dim); font-size:0.88rem; }
+.account-table th{ color:var(--fg-dim); font-family:'JetBrains Mono', monospace; font-size:0.74rem; text-transform:uppercase; letter-spacing:0.05em; font-weight:600; }
+.account-table td{ color:var(--fg); }
+.account-table td.dim{ color:var(--fg-dim); }
+.account-table .num{ font-family:'JetBrains Mono', monospace; text-align:right; }
+.account-table-wrap{ overflow-x:auto; border:1px solid var(--line-dim); border-radius:var(--radius); }
+.account-table-wrap .account-table{ border:none; }
+.account-table-wrap .account-table tr:last-child td{ border-bottom:none; }
+
+.status-badge{ font-family:'JetBrains Mono', monospace; font-size:0.72rem; padding:3px 9px; border-radius:999px; border:1px solid var(--line-dim); white-space:nowrap; }
+.status-badge.active{ color:var(--green); border-color:var(--line); background:var(--green-dim); }
+.status-badge.pending_review{ color:var(--amber); background:var(--amber-dim); }
+.status-badge.draft{ color:var(--fg-dim); }
+.status-badge.suspended{ color:#ff8484; border-color:rgba(255,132,132,0.3); }
+.status-badge.paid{ color:var(--green); border-color:var(--line); background:var(--green-dim); }
+.status-badge.pending{ color:var(--amber); background:var(--amber-dim); }
+.status-badge.refunded, .status-badge.failed{ color:#ff8484; border-color:rgba(255,132,132,0.3); }
+
 .stripe-note{
   border:1px solid var(--line-dim); border-radius:10px; padding:16px 18px; margin-bottom:28px;
   font-family:'JetBrains Mono', monospace; font-size:0.8rem; color:var(--fg-dim); background:var(--panel);

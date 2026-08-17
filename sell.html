@@ -167,15 +167,12 @@
   async function doSignIn() {
     const email = prompt('Email for a magic sign-in link:');
     if (!email) return;
-    const { error } = await supabaseClient.auth.signInWithOtp({
-      email,
-      options: { emailRedirectTo: window.location.href }
-    });
+    const { error } = await supabaseClient.auth.signInWithOtp({ email });
     alert(error ? 'Could not send link: ' + error.message : 'Check your email for a sign-in link, then come back to this page.');
   }
 
   authStatus.addEventListener('click', async () => {
-    if (currentUser) { await supabaseClient.auth.signOut(); await refreshAuth(); }
+    if (currentUser) { window.location.href = 'account.html'; }
     else doSignIn();
   });
   signinTrigger.addEventListener('click', doSignIn);

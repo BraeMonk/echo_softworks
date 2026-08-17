@@ -160,15 +160,12 @@
   authStatus.addEventListener('click', async () => {
     const { data: { session: s } } = await supabaseClient.auth.getSession();
     if (s) {
-      await supabaseClient.auth.signOut();
+      window.location.href = 'account.html';
       return;
     }
     const email = prompt('Email for a magic sign-in link:');
     if (!email) return;
-    const { error } = await supabaseClient.auth.signInWithOtp({
-      email,
-      options: { emailRedirectTo: window.location.href }
-    });
+    const { error } = await supabaseClient.auth.signInWithOtp({ email });
     alert(error ? 'Could not send link: ' + error.message : 'Check your email for a sign-in link.');
   });
 

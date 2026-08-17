@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>My Account | Echo Softworks</title>
+<meta name="description" content="Your Echo Softworks account — listings, sales, and payout status.">
+<meta name="robots" content="noindex, nofollow">
+<link rel="canonical" href="https://echosoftwork.com/account.html">
+<meta name="theme-color" content="#0B0F0E">
+
+<link rel="icon" href="favicon.ico" sizes="any">
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700;800&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="style.css">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="supabase-config.js"></script>
+</head>
+<body>
+
+<a class="skip-link" href="#top">Skip to content</a>
+
+<header class="site">
+  <nav>
+    <a href="index.html" class="logo"><span class="e">Echo</span>&nbsp;Softworks</a>
+    <button class="burger" id="burgerBtn" aria-label="Open menu" aria-expanded="false" aria-controls="navLinksWrap">
+      <span></span><span></span><span></span>
+    </button>
+    <div class="nav-links-wrap" id="navLinksWrap">
+      <ul>
+        <li><a href="index.html#services">Work</a></li>
+        <li><a href="scripts.html">Scripts</a></li>
+        <li><a href="marketplace.html">Marketplace</a></li>
+        <li><a href="index.html#about">About</a></li>
+      </ul>
+      <span class="pill" id="auth-status" style="cursor:pointer;">Sign in</span>
+      <a class="btn-coffee-nav" href="https://www.buymeacoffee.com/echosw" target="_blank" rel="noopener">☕ Support</a>
+    </div>
+  </nav>
+  <div class="nav-scrim" id="navScrim"></div>
+</header>
+
+<main id="top">
+  <section id="account">
+    <div class="wrap">
+
+      <!-- Signed-out gate -->
+      <div id="signed-out-gate" style="display:none;">
+        <div class="section-head">
+          <div class="section-tag">Account</div>
+          <h2>Sign in to view your account</h2>
+          <p class="account-gate">Your account page shows your listings, sales, and payout status. <span id="account-signin-trigger" style="color:var(--green); text-decoration:underline; cursor:pointer;">Sign in with a magic link →</span></p>
+        </div>
+      </div>
+
+      <!-- Signed-in account view -->
+      <div id="account-view" style="display:none;">
+        <div class="account-header">
+          <div>
+            <h2>My Account</h2>
+            <span class="account-email" id="account-email"></span>
+            <span class="pill account-badge" id="payout-badge" style="display:none;"></span>
+          </div>
+          <div style="display:flex; gap:12px; flex-wrap:wrap;">
+            <a href="sell.html" class="btn btn-primary">+ New listing</a>
+            <button class="btn btn-ghost" id="signout-btn">Sign out</button>
+          </div>
+        </div>
+
+        <div class="stat-grid">
+          <div class="stat-card">
+            <div class="stat-label">Listings</div>
+            <div class="stat-value" id="stat-total-listings">—</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">Active</div>
+            <div class="stat-value accent" id="stat-active-listings">—</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">Total sales</div>
+            <div class="stat-value" id="stat-total-sales">—</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">Net earnings</div>
+            <div class="stat-value accent" id="stat-net-earnings">—</div>
+          </div>
+        </div>
+
+        <div class="account-section">
+          <h3>Your listings</h3>
+          <div id="listings-empty" class="empty-hint" style="display:none;">You haven't listed anything yet. <a href="sell.html" style="color:var(--green);">Create your first listing →</a></div>
+          <div id="listings-table-wrap" class="account-table-wrap" style="display:none;">
+            <table class="account-table">
+              <thead>
+                <tr><th>Title</th><th>Category</th><th>Status</th><th class="num">Price</th><th>Listed</th></tr>
+              </thead>
+              <tbody id="listings-tbody"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="account-section">
+          <h3>Sales</h3>
+          <div id="orders-empty" class="empty-hint" style="display:none;">No sales yet.</div>
+          <div id="orders-table-wrap" class="account-table-wrap" style="display:none;">
+            <table class="account-table">
+              <thead>
+                <tr><th>Listing</th><th>Status</th><th class="num">Price</th><th class="num">Fee</th><th class="num">You received</th><th>Date</th></tr>
+              </thead>
+              <tbody id="orders-tbody"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="account-section" id="payout-section">
+          <h3>Payouts</h3>
+          <div class="stripe-note" id="payout-note">Loading payout status…</div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <span>© 2026 Echo Softworks</span>
+    <a href="https://www.buymeacoffee.com/echosw" target="_blank" rel="noopener">☕ Buy Me a Coffee</a>
+  </div>
+</footer>
+
+<script src="marketplace-data.js"></script>
+<script src="nav.js"></script>
+<script>
+(async function () {
+  const authStatus = document.getElementById('auth-status');
+  const signedOutGate = document.getElementById('signed-out-gate');
+  const accountView = document.getElementById('account-view');
+  const accountSigninTrigger = document.getElementById('account-signin-trigger');
+  const signoutBtn = document.getElementById('signout-btn');
+
+  let currentUser = null;
+
+  async function doSignIn() {
+    const email = prompt('Email for a magic sign-in link:');
+    if (!email) return;
+    const { error } = await supabaseClient.auth.signInWithOtp({ email });
+    alert(error ? 'Could not send link: ' + error.message : 'Check your email for a sign-in link, then come back to this page.');
+  }
+
+  // Nav pill: signed out → sign in. Signed in → go to account (this page),
+  // or if already here, this pill is just a label (sign out lives in the
+  // page body as an explicit button so it's never one accidental tap away).
+  authStatus.addEventListener('click', async () => {
+    const { data: { session } } = await supabaseClient.auth.getSession();
+    if (session) {
+      window.location.href = 'account.html';
+      return;
+    }
+    doSignIn();
+  });
+  accountSigninTrigger.addEventListener('click', doSignIn);
+  signoutBtn.addEventListener('click', async () => {
+    await supabaseClient.auth.signOut();
+    window.location.href = 'index.html';
+  });
+
+  function escapeHtml(str) {
+    return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  }
+  function money(cents) { return '$' + (cents / 100).toFixed(2); }
+  function statusLabel(s) { return s.replace(/_/g, ' '); }
+
+  async function loadAccount() {
+    if (!window.SUPABASE_URL || window.SUPABASE_URL.includes('YOUR-PROJECT')) {
+      document.getElementById('payout-note').textContent = 'Supabase isn\'t configured yet, so account data can\'t load.';
+      return;
+    }
+
+    // ── Listings ──
+    const { data: listings, error: listingsErr } = await supabaseClient
+      .from('listings')
+      .select('id, title, category, status, price_cents, created_at')
+      .eq('seller_id', currentUser.id)
+      .order('created_at', { ascending: false });
+
+    const listingRows = listingsErr || !listings ? [] : listings;
+    document.getElementById('stat-total-listings').textContent = listingRows.length;
+    document.getElementById('stat-active-listings').textContent =
+      listingRows.filter(l => l.status === 'active').length;
+
+    if (listingRows.length === 0) {
+      document.getElementById('listings-empty').style.display = 'block';
+    } else {
+      document.getElementById('listings-table-wrap').style.display = 'block';
+      document.getElementById('listings-tbody').innerHTML = listingRows.map(l => `
+        <tr>
+          <td>${escapeHtml(l.title)}</td>
+          <td class="dim">${escapeHtml((FEE_TABLE[l.category] || {}).label || l.category)}</td>
+          <td><span class="status-badge ${l.status}">${escapeHtml(statusLabel(l.status))}</span></td>
+          <td class="num">${money(l.price_cents)}</td>
+          <td class="dim">${escapeHtml((l.created_at || '').slice(0, 10))}</td>
+        </tr>
+      `).join('');
+    }
+
+    // ── Orders (sales) ──
+    const { data: orders, error: ordersErr } = await supabaseClient
+      .from('orders')
+      .select('id, listing_id, status, price_cents, fee_cents, created_at')
+      .eq('seller_id', currentUser.id)
+      .order('created_at', { ascending: false });
+
+    const orderRows = ordersErr || !orders ? [] : orders;
+    const paidOrders = orderRows.filter(o => o.status === 'paid');
+    const netCents = paidOrders.reduce((sum, o) => sum + (o.price_cents - o.fee_cents), 0);
+
+    document.getElementById('stat-total-sales').textContent = paidOrders.length;
+    document.getElementById('stat-net-earnings').textContent = money(netCents);
+
+    if (orderRows.length === 0) {
+      document.getElementById('orders-empty').style.display = 'block';
+    } else {
+      const listingTitleById = Object.fromEntries(listingRows.map(l => [l.id, l.title]));
+      document.getElementById('orders-table-wrap').style.display = 'block';
+      document.getElementById('orders-tbody').innerHTML = orderRows.map(o => `
+        <tr>
+          <td>${escapeHtml(listingTitleById[o.listing_id] || 'Listing')}</td>
+          <td><span class="status-badge ${o.status}">${escapeHtml(statusLabel(o.status))}</span></td>
+          <td class="num">${money(o.price_cents)}</td>
+          <td class="num dim">−${money(o.fee_cents)}</td>
+          <td class="num">${money(o.price_cents - o.fee_cents)}</td>
+          <td class="dim">${escapeHtml((o.created_at || '').slice(0, 10))}</td>
+        </tr>
+      `).join('');
+    }
+
+    // ── Payout status ──
+    const { data: sellerAccount } = await supabaseClient
+      .from('seller_accounts')
+      .select('payouts_enabled, details_submitted')
+      .eq('user_id', currentUser.id)
+      .maybeSingle();
+
+    const payoutBadge = document.getElementById('payout-badge');
+    const payoutNote = document.getElementById('payout-note');
+
+    if (!sellerAccount) {
+      payoutBadge.style.display = 'none';
+      payoutNote.textContent = 'You haven\'t started Stripe payout setup yet — that happens automatically the first time you submit a listing.';
+    } else if (sellerAccount.payouts_enabled) {
+      payoutBadge.textContent = 'Payouts enabled';
+      payoutBadge.className = 'pill account-badge ok';
+      payoutBadge.style.display = 'inline-block';
+      payoutNote.textContent = 'Stripe payouts are enabled on your account. Earnings from sales are paid out automatically.';
+    } else {
+      payoutBadge.textContent = 'Payout setup incomplete';
+      payoutBadge.className = 'pill account-badge pending';
+      payoutBadge.style.display = 'inline-block';
+      payoutNote.textContent = 'Stripe onboarding hasn\'t been completed yet, so payouts aren\'t enabled. Finish onboarding from the link Stripe emailed you, or start a new listing to get a fresh link.';
+    }
+  }
+
+  async function refresh() {
+    const { data: { session } } = await supabaseClient.auth.getSession();
+    currentUser = session?.user || null;
+    authStatus.textContent = currentUser ? currentUser.email : 'Sign in';
+
+    if (!currentUser) {
+      signedOutGate.style.display = 'block';
+      accountView.style.display = 'none';
+      return;
+    }
+    signedOutGate.style.display = 'none';
+    accountView.style.display = 'block';
+    document.getElementById('account-email').textContent = currentUser.email;
+    await loadAccount();
+  }
+
+  supabaseClient.auth.onAuthStateChange(refresh);
+  await refresh();
+})();
+</script>
+</body>
+</html>

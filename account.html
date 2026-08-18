@@ -121,6 +121,11 @@
         <div class="account-section" id="payout-section">
           <h3>Payouts</h3>
           <div class="stripe-note" id="payout-note">Loading payout status…</div>
+          <a href="payout-setup.html" class="card" id="payout-setup-link" style="display:block; text-decoration:none; margin-top:16px;">
+            <span class="tag">Seller</span>
+            <h3 id="payout-setup-title">Manage payout setup</h3>
+            <p>Check your Stripe Connect status, or resume onboarding if it didn't finish.</p>
+          </a>
         </div>
       </div>
 
@@ -250,20 +255,24 @@
 
     const payoutBadge = document.getElementById('payout-badge');
     const payoutNote = document.getElementById('payout-note');
+    const payoutSetupTitle = document.getElementById('payout-setup-title');
 
     if (!sellerAccount) {
       payoutBadge.style.display = 'none';
-      payoutNote.textContent = 'You haven\'t started Stripe payout setup yet — that happens automatically the first time you submit a listing.';
+      payoutNote.textContent = 'You haven\'t started Stripe payout setup yet.';
+      payoutSetupTitle.textContent = 'Start payout setup →';
     } else if (sellerAccount.payouts_enabled) {
       payoutBadge.textContent = 'Payouts enabled';
       payoutBadge.className = 'pill account-badge ok';
       payoutBadge.style.display = 'inline-block';
       payoutNote.textContent = 'Stripe payouts are enabled on your account. Earnings from sales are paid out automatically.';
+      payoutSetupTitle.textContent = 'Manage payout setup →';
     } else {
       payoutBadge.textContent = 'Payout setup incomplete';
       payoutBadge.className = 'pill account-badge pending';
       payoutBadge.style.display = 'inline-block';
-      payoutNote.textContent = 'Stripe onboarding hasn\'t been completed yet, so payouts aren\'t enabled. Finish onboarding from the link Stripe emailed you, or start a new listing to get a fresh link.';
+      payoutNote.textContent = 'Stripe onboarding hasn\'t been completed yet, so payouts aren\'t enabled.';
+      payoutSetupTitle.textContent = 'Finish payout setup →';
     }
   }
 

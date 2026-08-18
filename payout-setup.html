@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Payout Setup — Echo Softworks</title>
+<meta name="robots" content="noindex, follow">
+<meta name="theme-color" content="#0B0F0E">
+
+<link rel="icon" href="favicon.ico" sizes="any">
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700;800&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="style.css">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="supabase-config.js"></script>
+</head>
+<body>
+
+<a class="skip-link" href="#top">Skip to content</a>
+
+<header class="site">
+  <nav>
+    <a href="index.html" class="logo"><span class="e">Echo</span>&nbsp;Softworks</a>
+    <button class="burger" id="burgerBtn" aria-label="Open menu" aria-expanded="false" aria-controls="navLinksWrap">
+      <span></span><span></span><span></span>
+    </button>
+    <div class="nav-links-wrap" id="navLinksWrap">
+      <ul>
+        <li><a href="index.html#services">Work</a></li>
+        <li><a href="scripts.html">Scripts</a></li>
+        <li><a href="marketplace.html">Marketplace</a></li>
+        <li><a href="index.html#about">About</a></li>
+      </ul>
+      <span class="pill" id="auth-status" style="cursor:pointer;">Sign in</span>
+      <a class="btn-coffee-nav" href="https://www.buymeacoffee.com/echosw" target="_blank" rel="noopener">☕ Support</a>
+    </div>
+  </nav>
+  <div class="nav-scrim" id="navScrim"></div>
+</header>
+
+<main id="top">
+  <section id="payout-setup">
+    <div class="wrap">
+      <div class="section-head">
+        <div class="section-tag">Seller</div>
+        <h2>Payout setup</h2>
+        <p>Complete or resume Stripe Connect onboarding — separate from creating a listing, so you can retry this on its own if it didn't finish the first time.</p>
+      </div>
+
+      <div id="signed-out-notice" class="stripe-note" style="display:none;">
+        <strong>Sign in first:</strong> payout setup is tied to your account.
+        <span id="signin-trigger" style="color:var(--green); text-decoration:underline; cursor:pointer;">Sign in with a magic link →</span>
+      </div>
+
+      <div id="status-panel" class="fee-preview" style="display:none; max-width:520px;">
+        <h4>Current status</h4>
+        <div class="row"><span>Stripe account</span><span id="status-account">—</span></div>
+        <div class="row"><span>Details submitted</span><span id="status-details">—</span></div>
+        <div class="row total"><span>Payouts enabled</span><span id="status-payouts">—</span></div>
+      </div>
+
+      <div class="form-actions" style="margin-top:24px;">
+        <button class="btn btn-primary" id="onboard-btn" disabled>Continue Stripe payout setup</button>
+        <span class="form-status" id="onboard-status"></span>
+      </div>
+
+      <p class="form-hint" style="margin-top:20px; max-width:60ch;">
+        Stripe onboarding can be safely re-run — if you didn't finish it last time, this reuses your existing Stripe account and picks up where you left off rather than creating a duplicate.
+      </p>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <span>© 2026 Echo Softworks · <a href="terms.html">Terms</a> · <a href="privacy.html">Privacy</a></span>
+    <a href="https://www.buymeacoffee.com/echosw" target="_blank" rel="noopener">☕ Buy Me a Coffee</a>
+  </div>
+</footer>
+
+<script src="nav.js"></script>
+<script src="auth-nav.js"></script>
+<script>
+(async function () {
+  const signedOutNotice = document.getElementById('signed-out-notice');
+  const statusPanel = document.getElementById('status-panel');
+  const onboardBtn = document.getElementById('onboard-btn');
+  const onboardStatus = document.getElementById('onboard-status');
+  const signinTrigger = document.getElementById('signin-trigger');
+
+  signinTrigger.addEventListener('click', async () => {
+    const email = prompt('Email for a magic sign-in link:');
+    if (!email) return;
+    const { error } = await supabaseClient.auth.signInWithOtp({ email });
+    alert(error ? 'Could not send link: ' + error.message : 'Check your email for a sign-in link, then come back to this page.');
+  });
+
+  async function loadStatus() {
+    const { data: { session } } = await supabaseClient.auth.getSession();
+
+    if (!session) {
+      signedOutNotice.style.display = 'block';
+      statusPanel.style.display = 'none';
+      onboardBtn.disabled = true;
+      return;
+    }
+    signedOutNotice.style.display = 'none';
+    statusPanel.style.display = 'block';
+    onboardBtn.disabled = false;
+
+    const { data: acct } = await supabaseClient
+      .from('seller_accounts')
+      .select('stripe_account_id, details_submitted, payouts_enabled')
+      .eq('user_id', session.user.id)
+      .maybeSingle();
+
+    document.getElementById('status-account').textContent = acct?.stripe_account_id
+      ? acct.stripe_account_id.slice(0, 12) + '…'
+      : 'Not started yet';
+    document.getElementById('status-details').textContent = acct?.details_submitted ? 'Yes' : 'No';
+    document.getElementById('status-payouts').textContent = acct?.payouts_enabled ? 'Yes' : 'No';
+
+    onboardBtn.textContent = acct?.stripe_account_id
+      ? 'Continue Stripe payout setup'
+      : 'Start Stripe payout setup';
+  }
+
+  onboardBtn.addEventListener('click', async () => {
+    onboardBtn.disabled = true;
+    onboardStatus.className = 'form-status';
+    onboardStatus.textContent = 'Contacting Stripe…';
+
+    try {
+      const { data, error } = await supabaseClient.functions.invoke('connect-onboard', {});
+      if (error) throw error;
+      if (!data?.url) throw new Error(data?.error || 'No onboarding URL returned');
+      onboardStatus.textContent = 'Redirecting to Stripe…';
+      window.location.href = data.url;
+    } catch (err) {
+      onboardStatus.className = 'form-status err';
+      onboardStatus.textContent = 'Error: ' + (err.message || err);
+      onboardBtn.disabled = false;
+    }
+  });
+
+  supabaseClient.auth.onAuthStateChange(loadStatus);
+  await loadStatus();
+})();
+</script>
+
+</body>
+</html>

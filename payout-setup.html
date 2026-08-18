@@ -114,6 +114,19 @@
     statusPanel.style.display = 'block';
     onboardBtn.disabled = false;
 
+    // If we just returned from Stripe, force a fresh sync instead of
+    // trusting that the webhook already landed.
+    const params = new URLSearchParams(window.location.search);
+    if (params.get('onboarding') === 'complete') {
+      try {
+        await supabaseClient.functions.invoke('sync-account-status', {});
+      } catch (err) {
+        console.error('Sync failed, falling back to cached status', err);
+      }
+      // Clean the URL so a refresh doesn't re-trigger this every time.
+      window.history.replaceState({}, '', window.location.pathname);
+    }
+
     const { data: acct } = await supabaseClient
       .from('seller_accounts')
       .select('stripe_account_id, details_submitted, payouts_enabled')

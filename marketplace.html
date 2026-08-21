@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <title>Marketplace | Buy &amp; Sell Build Assets — Echo Softworks</title>
-<meta name="description" content="A community marketplace for game dev assets, web templates, Raspberry Pi and embedded builds, and CAD/fabrication files. Buy finished work, or sell your own — Echo Softworks takes a 3–7% cut depending on category.">
+<meta name="description" content="A community marketplace for game dev assets, web templates, Raspberry Pi and embedded builds, and CAD/fabrication files. Buy finished work, or sell your own — Echo Softworks takes a 4–7% + $0.35 cut depending on category.">
 <meta name="robots" content="index, follow, max-image-preview:large">
 <link rel="canonical" href="https://echosoftwork.com/marketplace.html">
 <meta name="theme-color" content="#0B0F0E">
@@ -67,7 +67,7 @@
       </div>
 
       <div class="fee-note">
-        Echo Softworks takes a platform fee of <strong>4–7%</strong> per sale depending on category (shown on every listing) — the rest goes straight to the maker. Payouts run through Stripe Connect.
+        Echo Softworks takes a platform fee of <strong>4–7% + $0.35</strong> per sale depending on category (shown on every listing) — the rest goes straight to the maker. Payouts run through Stripe Connect.
       </div>
 
       <div class="market-toolbar">
@@ -222,6 +222,7 @@
 
   function buildCard(listing) {
     const fee = FEE_TABLE[listing.category];
+    const { fee: feeAmount } = calculateFee(listing.price, listing.category);
     const card = document.createElement('div');
     card.className = 'listing-card';
     card.dataset.category = listing.category;
@@ -239,7 +240,7 @@
         <div class="listing-tags">${listing.tags.map(t => `<span class="pill">${escapeHtml(t)}</span>`).join('')}</div>
         <div class="listing-meta-row">
           <span class="listing-price">${money(listing.price)}</span>
-          <span class="pill">${Math.round(fee.rate * 100)}% fee</span>
+          <span class="pill">${money(feeAmount)} fee</span>
         </div>
       </div>
       <div class="listing-footer">
@@ -299,7 +300,8 @@
     if (!listing) return;
     currentListing = listing;
     const fee = FEE_TABLE[listing.category];
-    const feeAmount = listing.price * fee.rate;
+    const { fee: feeAmount } = calculateFee(listing.price, listing.category);
+    const coverStr = `$${(STRIPE_COVER_CENTS / 100).toFixed(2)}`;
 
     document.getElementById('modal-title').textContent = listing.title;
     document.getElementById('modal-cat-pill').textContent = fee.label;
@@ -309,7 +311,7 @@
     document.getElementById('modal-files').textContent = listing.fileCount + ' files';
     document.getElementById('modal-updated').textContent = listing.updated;
     document.getElementById('fee-price').textContent = money(listing.price);
-    document.getElementById('fee-label').textContent = `Platform fee (${Math.round(fee.rate * 100)}%, paid by seller)`;
+    document.getElementById('fee-label').textContent = `Platform fee (${Math.round(fee.rate * 100)}% + ${coverStr}, paid by seller)`;
     document.getElementById('fee-amount').textContent = '−' + money(feeAmount);
     document.getElementById('fee-total').textContent = money(listing.price);
 

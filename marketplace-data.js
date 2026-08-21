@@ -10,6 +10,30 @@ const FEE_TABLE = {
   code:     { label: 'Code & Scripts',      rate: 0.07, icon: 'code' },
 };
 
+// Flat cents added on top of the percentage fee to cover Stripe's own
+// per-transaction processing cost (~2.9% + $0.30). Mirrors
+// STRIPE_COVER_CENTS in /backend/checkout/index.ts — keep in sync by hand.
+const STRIPE_COVER_CENTS = 35;
+
+// Mirrors splitPayment() in /backend/checkout/index.ts. This is the single
+// place display code should compute a fee — every page that shows a fee
+// number should call this instead of doing `price * rate` by hand, or it
+// will silently drift from what checkout.ts actually charges.
+// `price` is dollars (matches the DOM inputs); returns dollar amounts.
+function calculateFee(price, category) {
+  const cfg = FEE_TABLE[category];
+  if (!cfg) throw new Error(`Unknown category: ${category}`);
+  const priceCents = Math.round(price * 100);
+  const feeCents = Math.round(priceCents * cfg.rate) + STRIPE_COVER_CENTS;
+  return {
+    rate: cfg.rate,
+    feeCents,
+    fee: feeCents / 100,
+    sellerCents: priceCents - feeCents,
+    seller: (priceCents - feeCents) / 100,
+  };
+}
+
 // Used only as a fallback so the page still demos before Supabase is
 // configured — once supabase-config.js has real values, marketplace.html
 // loads real listings from the `listings` table instead of this array.

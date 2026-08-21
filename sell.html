@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <title>Sell on the Marketplace — Echo Softworks</title>
-<meta name="description" content="List your game dev assets, web templates, hardware/Pi builds, or CAD files for sale on the Echo Softworks marketplace. Set your price, keep the majority — platform fee is 4–7% depending on category.">
+<meta name="description" content="List your game dev assets, web templates, hardware/Pi builds, or CAD files for sale on the Echo Softworks marketplace. Set your price, keep the majority — platform fee is 4–7% + $0.35 depending on category.">
 <meta name="robots" content="index, follow">
 <link rel="canonical" href="https://echosoftwork.com/sell.html">
 <meta name="theme-color" content="#0B0F0E">
@@ -68,6 +68,7 @@
         <thead><tr><th>Category</th><th>Platform fee</th></tr></thead>
         <tbody id="fee-table-body"></tbody>
       </table>
+      <div class="form-hint" style="margin-top:8px;">The flat $0.35 covers Stripe's own per-transaction processing cost — it's included in every fee shown above and in the payout preview below.</div>
 
       <form class="sell-form" id="sell-form" style="margin-top:36px;">
         <div class="form-row">
@@ -179,14 +180,16 @@
   supabaseClient.auth.onAuthStateChange(refreshAuth);
   await refreshAuth();
 
+  const coverStr = `$${(STRIPE_COVER_CENTS / 100).toFixed(2)}`;
+
   Object.entries(FEE_TABLE).forEach(([key, cfg]) => {
     const opt = document.createElement('option');
     opt.value = key;
-    opt.textContent = `${cfg.label} (${Math.round(cfg.rate * 100)}%)`;
+    opt.textContent = `${cfg.label} (${Math.round(cfg.rate * 100)}% + ${coverStr})`;
     categorySelect.appendChild(opt);
 
     const row = document.createElement('tr');
-    row.innerHTML = `<td>${cfg.label}</td><td>${Math.round(cfg.rate * 100)}%</td>`;
+    row.innerHTML = `<td>${cfg.label}</td><td>${Math.round(cfg.rate * 100)}% + ${coverStr}</td>`;
     feeTableBody.appendChild(row);
   });
 
@@ -194,12 +197,13 @@
 
   function updatePreview() {
     const price = parseFloat(document.getElementById('price').value) || 0;
-    const cat = FEE_TABLE[categorySelect.value] || Object.values(FEE_TABLE)[0];
-    const fee = price * cat.rate;
+    const catKey = FEE_TABLE[categorySelect.value] ? categorySelect.value : Object.keys(FEE_TABLE)[0];
+    const cfg = FEE_TABLE[catKey];
+    const { fee, seller } = calculateFee(price, catKey);
     document.getElementById('preview-price').textContent = money(price);
-    document.getElementById('preview-fee-label').textContent = `Platform fee (${Math.round(cat.rate * 100)}%)`;
+    document.getElementById('preview-fee-label').textContent = `Platform fee (${Math.round(cfg.rate * 100)}% + ${coverStr})`;
     document.getElementById('preview-fee').textContent = '−' + money(fee);
-    document.getElementById('preview-total').textContent = money(price - fee);
+    document.getElementById('preview-total').textContent = money(seller);
   }
 
   document.getElementById('price').addEventListener('input', updatePreview);

@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>System Status — Echo Softworks</title>
+<meta name="description" content="Live status of the Echo Softworks marketplace — database, checkout, payouts, and downloads.">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="https://echosoftwork.com/status.html">
+<meta name="theme-color" content="#0B0F0E">
+
+<link rel="icon" href="favicon.ico" sizes="any">
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700;800&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="style.css">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="supabase-config.js"></script>
+
+<style>
+  .status-grid{ display:grid; grid-template-columns:repeat(auto-fit,minmax(260px,1fr)); gap:16px; margin-bottom:36px; }
+  .status-card{
+    background:var(--panel); border:1px solid var(--line-dim); border-radius:var(--radius);
+    padding:20px 22px; display:flex; flex-direction:column; gap:10px;
+  }
+  .status-card-head{ display:flex; align-items:center; justify-content:space-between; gap:12px; }
+  .status-card-head h4{ margin:0; font-size:0.95rem; font-family:'JetBrains Mono', monospace; font-weight:600; }
+  .status-dot{ width:10px; height:10px; border-radius:50%; flex-shrink:0; }
+  .status-dot.ok{ background:var(--green); box-shadow:0 0 8px rgba(124,255,178,0.5); }
+  .status-dot.warn{ background:#f5c451; box-shadow:0 0 8px rgba(245,196,81,0.5); }
+  .status-dot.down{ background:#ff8484; box-shadow:0 0 8px rgba(255,132,132,0.5); }
+  .status-dot.unknown{ background:var(--fg-dim); }
+  .status-label{ font-family:'JetBrains Mono', monospace; font-size:0.78rem; padding:3px 10px; border-radius:999px; }
+  .status-label.ok{ color:var(--green); background:var(--green-dim); }
+  .status-label.warn{ color:#f5c451; background:rgba(245,196,81,0.12); }
+  .status-label.down{ color:#ff8484; background:rgba(255,132,132,0.12); }
+  .status-label.unknown{ color:var(--fg-dim); background:var(--line-dim); }
+  .status-detail{ color:var(--fg-dim); font-size:0.82rem; font-family:'JetBrains Mono', monospace; }
+  .status-external-link{ color:var(--green); text-decoration:underline; font-size:0.82rem; font-family:'JetBrains Mono', monospace; }
+  .status-refresh-row{ display:flex; align-items:center; gap:14px; margin-bottom:20px; flex-wrap:wrap; }
+  .status-last-checked{ color:var(--fg-dim); font-size:0.8rem; font-family:'JetBrains Mono', monospace; }
+</style>
+</head>
+<body>
+
+<a class="skip-link" href="#top">Skip to content</a>
+
+<header class="site">
+  <nav>
+    <a href="index.html" class="logo"><span class="e">Echo</span>&nbsp;Softworks</a>
+    <button class="burger" id="burgerBtn" aria-label="Open menu" aria-expanded="false" aria-controls="navLinksWrap">
+      <span></span><span></span><span></span>
+    </button>
+    <div class="nav-links-wrap" id="navLinksWrap">
+      <ul>
+        <li><a href="index.html#services">Work</a></li>
+        <li><a href="scripts.html">Scripts</a></li>
+        <li><a href="marketplace.html">Marketplace</a></li>
+        <li><a href="index.html#about">About</a></li>
+      </ul>
+      <span class="pill" id="auth-status" style="cursor:pointer;">Sign in</span>
+      <a class="btn-coffee-nav" href="https://www.buymeacoffee.com/echosw" target="_blank" rel="noopener">☕ Support</a>
+    </div>
+  </nav>
+  <div class="nav-scrim" id="navScrim"></div>
+</header>
+
+<main id="top">
+  <section id="status">
+    <div class="wrap">
+      <div class="section-head">
+        <div class="section-tag">Status</div>
+        <h2>System status</h2>
+        <p>Live status of the marketplace's core services — checked directly from your browser, refreshed automatically.</p>
+      </div>
+
+      <div class="status-refresh-row">
+        <button class="btn btn-ghost" id="refresh-btn">↻ Refresh now</button>
+        <span class="status-last-checked" id="last-checked">Checking…</span>
+      </div>
+
+      <h3 style="font-size:1rem; margin-bottom:14px;">Marketplace</h3>
+      <div class="status-grid" id="own-systems-grid"></div>
+
+      <h3 style="font-size:1rem; margin-bottom:14px;">Upstream providers</h3>
+      <div class="status-grid" id="upstream-grid"></div>
+
+      <p class="form-hint" style="max-width:70ch;">
+        Stripe and Resend don't expose a status API that can be safely checked from a browser, so those two link out to their official status pages instead of risking a false "down" reading.
+      </p>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <span>© 2026 Echo Softworks · <a href="terms.html">Terms</a> · <a href="privacy.html">Privacy</a> · <a href="status.html">Status</a></span>
+    <a href="https://www.buymeacoffee.com/echosw" target="_blank" rel="noopener">☕ Buy Me a Coffee</a>
+  </div>
+</footer>
+
+<script src="nav.js"></script>
+<script src="auth-nav.js"></script>
+<script>
+(function () {
+  const ownGrid = document.getElementById('own-systems-grid');
+  const upstreamGrid = document.getElementById('upstream-grid');
+  const lastChecked = document.getElementById('last-checked');
+  const refreshBtn = document.getElementById('refresh-btn');
+
+  const FUNCTIONS_BASE = `${window.SUPABASE_URL}/functions/v1`;
+
+  function timeAgo(iso) {
+    if (!iso) return 'never';
+    const ms = Date.now() - new Date(iso).getTime();
+    const mins = Math.floor(ms / 60000);
+    if (mins < 1) return 'just now';
+    if (mins < 60) return `${mins}m ago`;
+    const hrs = Math.floor(mins / 60);
+    if (hrs < 24) return `${hrs}h ago`;
+    return `${Math.floor(hrs / 24)}d ago`;
+  }
+
+  function card(name, statusClass, statusText, detail, linkHref, linkText) {
+    const el = document.createElement('div');
+    el.className = 'status-card';
+    el.innerHTML = `
+      <div class="status-card-head">
+        <h4>${name}</h4>
+        <span class="status-dot ${statusClass}"></span>
+      </div>
+      <span class="status-label ${statusClass}" style="width:fit-content;">${statusText}</span>
+      ${detail ? `<span class="status-detail">${detail}</span>` : ''}
+      ${linkHref ? `<a class="status-external-link" href="${linkHref}" target="_blank" rel="noopener">${linkText || 'View status ↗'}</a>` : ''}
+    `;
+    return el;
+  }
+
+  // ── Marketplace (your own systems) ────────────────────────
+  // Labels here are user-facing on purpose — visitors don't need to know
+  // this is "the checkout Edge Function" vs. "the get-download-url Edge
+  // Function", they need to know "can I buy things" and "can I download
+  // what I bought".
+
+  async function checkSupabaseDb() {
+    try {
+      const { error } = await supabaseClient.from('listings').select('id').limit(1);
+      if (error) return { ok: false, detail: 'Investigating an issue' };
+      return { ok: true, detail: '' };
+    } catch (err) {
+      return { ok: false, detail: 'Investigating an issue' };
+    }
+  }
+
+  async function pingFunction(name) {
+    try {
+      const res = await fetch(`${FUNCTIONS_BASE}/${name}`, { method: 'OPTIONS' });
+      return { ok: res.status < 500, detail: '' };
+    } catch (err) {
+      return { ok: false, detail: 'Investigating an issue' };
+    }
+  }
+
+  async function checkWebhookHeartbeat() {
+    try {
+      const { data, error } = await supabaseClient
+        .from('system_heartbeats')
+        .select('last_success_at, last_event_type')
+        .eq('service', 'stripe-webhook')
+        .maybeSingle();
+
+      if (error || !data) {
+        return { status: 'unknown', detail: 'Status unavailable' };
+      }
+      if (data.last_event_type === 'not seen yet') {
+        return { status: 'warn', detail: 'No recent activity yet' };
+      }
+
+      const ageMins = (Date.now() - new Date(data.last_success_at).getTime()) / 60000;
+      const detail = `Last confirmed: ${timeAgo(data.last_success_at)}`;
+
+      if (ageMins > 60 * 24 * 14) return { status: 'warn', detail };
+      return { status: 'ok', detail };
+    } catch (err) {
+      return { status: 'unknown', detail: 'Status unavailable' };
+    }
+  }
+
+  async function loadOwnSystems() {
+    ownGrid.innerHTML = '<div class="status-detail">Checking…</div>';
+    const [db, checkout, payouts, downloads, webhook] = await Promise.all([
+      checkSupabaseDb(),
+      pingFunction('checkout'),
+      pingFunction('connect-onboard'),
+      pingFunction('get-download-url'),
+      checkWebhookHeartbeat(),
+    ]);
+
+    ownGrid.innerHTML = '';
+    ownGrid.appendChild(card('Database', db.ok ? 'ok' : 'down', db.ok ? 'Operational' : 'Unreachable', db.detail));
+    ownGrid.appendChild(card('Checkout', checkout.ok ? 'ok' : 'down', checkout.ok ? 'Operational' : 'Unreachable', checkout.detail));
+    ownGrid.appendChild(card('Seller payouts', payouts.ok ? 'ok' : 'down', payouts.ok ? 'Operational' : 'Unreachable', payouts.detail));
+    ownGrid.appendChild(card('Downloads', downloads.ok ? 'ok' : 'down', downloads.ok ? 'Operational' : 'Unreachable', downloads.detail));
+
+    const whStatus = webhook.status === 'ok' ? 'ok' : webhook.status === 'warn' ? 'warn' : 'unknown';
+    const whLabel = whStatus === 'ok' ? 'Operational' : whStatus === 'warn' ? 'Degraded' : 'Unknown';
+    ownGrid.appendChild(card('Payment confirmation', whStatus, whLabel, webhook.detail));
+  }
+
+  // ── Upstream providers ────────────────────────────────────
+
+  async function checkSupabasePlatform() {
+    try {
+      const res = await fetch('https://status.supabase.com/api/v2/summary.json');
+      if (!res.ok) throw new Error('bad response');
+      const data = await res.json();
+      const indicator = data.status?.indicator || 'unknown';
+      const desc = data.status?.description || 'Unknown';
+      const map = { none: 'ok', minor: 'warn', major: 'down', critical: 'down' };
+      return { status: map[indicator] || 'unknown', detail: desc };
+    } catch (err) {
+      return { status: 'unknown', detail: 'Could not reach status API' };
+    }
+  }
+
+  async function loadUpstream() {
+    upstreamGrid.innerHTML = '<div class="status-detail">Checking…</div>';
+    const supabasePlatform = await checkSupabasePlatform();
+
+    upstreamGrid.innerHTML = '';
+    upstreamGrid.appendChild(card(
+      'Hosting & Database',
+      supabasePlatform.status,
+      supabasePlatform.status === 'ok' ? 'Operational' : supabasePlatform.detail,
+      supabasePlatform.detail,
+      'https://status.supabase.com',
+      'View status ↗'
+    ));
+    upstreamGrid.appendChild(card(
+      'Payments (Stripe)',
+      'unknown',
+      'Check status page',
+      'Stripe\'s status isn\'t checkable from a browser — view their page directly.',
+      'https://status.stripe.com',
+      'View status ↗'
+    ));
+    upstreamGrid.appendChild(card(
+      'Email (Resend)',
+      'unknown',
+      'Check status page',
+      'Resend\'s status isn\'t checkable from a browser — view their page directly.',
+      'https://resend-status.com',
+      'View status ↗'
+    ));
+  }
+
+  async function loadAll() {
+    lastChecked.textContent = 'Checking…';
+    await Promise.all([loadOwnSystems(), loadUpstream()]);
+    lastChecked.textContent = 'Last checked: ' + new Date().toLocaleTimeString();
+  }
+
+  refreshBtn.addEventListener('click', loadAll);
+  loadAll();
+  setInterval(loadAll, 60000);
+})();
+</script>
+
+</body>
+</html>

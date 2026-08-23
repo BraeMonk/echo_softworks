@@ -112,14 +112,14 @@
 
   const PROJECTS = [
     // Paste new project objects here, in this shape:
-    // {
-    //   title: "",
-    //   type: "client",
-    //   image: "",
-    //   description: "",
-    //   tags: [],
-    //   links: []
-    // },
+    {
+         title: "RELAY",
+         type: "client",              // "client" or "personal"
+         image: "",                     // leave blank if you don't have one — no box is shown, just skipped
+         description: "RELAY — MIDI Controller — A browser-based PWA that turns any phone or tablet into a full MIDI performance rig: a scale-aware keyboard, velocity-sensitive drum pads with a built-in sampler, a guitar amp simulator with cab IR loading, and a layered live looper — all synced to outboard gear over WebSocket. Works fully offline.",
+         tags: ["PWA", "WebRTC"],
+         links: [{ label: "View on Marketplace", url: "https://echosoftwork.com/marketplace" }]
+    },
   ];
 
   const grid = document.getElementById("portfolioGrid");
